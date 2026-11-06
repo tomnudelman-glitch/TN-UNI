@@ -23,6 +23,7 @@
   --warm: #86500c;
   --warm-soft: #f6e6cc;
   --flash: #fff3b8;
+  --tint: #f2f5f7;
   --font-display: "Suez One", "David Libre", "Times New Roman", serif;
   --font-body: "Alef", "Heebo", "Segoe UI", Arial, sans-serif;
 }
@@ -39,6 +40,7 @@
     --warm: #e3a857;
     --warm-soft: #3a2c14;
     --flash: #4a4116;
+    --tint: #1c2a32;
     color-scheme: dark;
   }
 }
@@ -54,6 +56,7 @@
   --warm: #e3a857;
   --warm-soft: #3a2c14;
   --flash: #4a4116;
+  --tint: #1c2a32;
   color-scheme: dark;
 }
 
@@ -73,106 +76,113 @@ button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+
+/* top bar: brand + department switch */
+.topbar {
+  max-width: 1180px;
+  margin: 0 auto 18px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { font-family: var(--font-display); font-size: 26px; line-height: 1.1; }
+.switch { display: flex; gap: 6px; background: var(--tint); border: 1px solid var(--line); border-radius: 12px; padding: 5px; }
+.switch button {
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.25;
+}
+.switch button small { font-weight: 400; font-size: 13px; }
+.switch button:hover { color: var(--ink); }
+.switch button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+
 .app {
-  max-width: 1120px;
+  max-width: 1180px;
   margin-inline: auto;
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 36px;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
   align-items: start;
 }
 
-/* course rail */
-.side { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 14px; }
-.side h2 {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-}
-.tracks { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-.track { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.track h2 {
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--line);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 19px;
-  letter-spacing: 0;
-}
-.eyebrow { margin: 0 0 4px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); }
-.courses { display: flex; flex-direction: column; gap: 6px; }
+/* course list (right side) */
+.side { position: sticky; top: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.side h2 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); }
+.courses { display: flex; flex-direction: column; gap: 8px; }
 .course {
   text-align: right;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 10px 12px;
+  background: var(--tint);
+  border: 1px solid var(--line);
+  border-inline-start: 5px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
   line-height: 1.35;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
-.course:hover { background: var(--surface); border-color: var(--line); }
+.course:hover { border-color: var(--accent); }
 .course[aria-current="true"] { background: var(--accent-soft); border-color: var(--accent); }
 .course b { font-weight: 700; font-size: 16px; }
 .course small { color: var(--muted); font-size: 13.5px; }
 
-/* main */
-main { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+/* main column */
+main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.head { padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); }
 .head h1 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(30px, 5vw, 46px);
+  font-size: clamp(28px, 4.6vw, 42px);
   line-height: 1.15;
   text-wrap: balance;
 }
-.head p { margin: 6px 0 0; color: var(--muted); }
+.head p { margin: 0; color: var(--muted); }
+.head .note p { margin: 8px 0 0; color: var(--ink); }
+.head .note { margin-top: 6px; padding: 12px 14px; background: var(--tint); border: 1px solid var(--line); border-radius: 10px; font-size: 15.5px; line-height: 1.6; color: var(--ink); }
 
-.bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 20px;
-  align-items: flex-end;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-}
-.tabs { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.bar { padding: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; z-index: 5; }
+.tabs { display: flex; gap: 6px; flex: 1 1 auto; background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
 .tab {
-  background: none;
+  flex: 1 1 0;
+  background: transparent;
   border: 0;
-  border-bottom: 3px solid transparent;
-  padding: 8px 2px 9px;
-  font-weight: 600;
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-weight: 700;
   color: var(--muted);
-  margin-bottom: -1px;
+  white-space: nowrap;
 }
 .tab:hover { color: var(--ink); }
-.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
-.search { padding-bottom: 8px; flex: 1 1 200px; max-width: 320px; }
-.search input {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 7px 12px;
-}
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.search { flex: 1 1 200px; max-width: 300px; }
+.search input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; }
 .search input::placeholder { color: var(--muted); }
 
-.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#content { display: flex; flex-direction: column; gap: 16px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .chip {
-  background: var(--surface);
+  background: var(--tint);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 3px 14px;
   font-size: 15px;
 }
-.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
 .tools .sep { color: var(--muted); font-size: 14px; margin-inline-start: 6px; }
-
-.note { margin: 0; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: 15.5px; line-height: 1.6; max-width: 80ch; }
 
 /* source tags */
 .tag {
@@ -212,15 +222,30 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
 .pop b { display: block; font-family: var(--font-display); font-size: 18px; margin-bottom: 2px; }
 .pop button { margin-top: 8px; background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; font-size: 14.5px; }
 
-/* quick review */
-.rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
-.row { padding: 18px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 4px 18px; }
-.row .wk { color: var(--muted); font-weight: 700; font-size: 14.5px; padding-top: 6px; }
-.row h3 { margin: 0; font-family: var(--font-display); font-size: 25px; line-height: 1.25; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
-.row .tldr { margin: 6px 0 10px; max-width: 68ch; }
+/* topic boxes (quick review + summaries) */
+.rows, .stack { display: flex; flex-direction: column; gap: 16px; }
+.topic { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 90px; }
+.topic-h { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.topic-h h3 { margin: 0; font-family: var(--font-display); font-size: 25px; line-height: 1.25; text-wrap: balance; flex: 1 1 220px; }
+.wk { background: var(--tint); border: 1px solid var(--line); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.topic .src { margin: -4px 0 0; color: var(--muted); font-size: 14.5px; }
+.card.flash, .entry.flash { animation: flash 1.6s ease; }
+@keyframes flash { 0%, 40% { background: var(--flash); } 100% { background: var(--surface); } }
+
+.sec { background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.sec.lead-box { background: var(--accent-soft); border-color: transparent; }
+.sec.q-box { background: var(--warm-soft); border-color: transparent; }
+.sec-l { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); }
+.lead-box .sec-l { color: var(--accent); }
+.q-box .sec-l { color: var(--warm); }
+.sec p { margin: 0; max-width: 68ch; }
+.sec .lead { font-size: 18px; font-weight: 700; }
+.sec ul, .sec ol { margin: 0; padding-inline-start: 22px; max-width: 68ch; }
+.sec li { margin-bottom: 7px; }
+.sec li:last-child { margin-bottom: 0; }
+.sec ol li { color: var(--ink); }
 .quiz .row:not(.shown) .tldr { filter: blur(7px); cursor: pointer; user-select: none; }
-.quiz .row:not(.shown) .tldr::after { content: none; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 6px; padding: 0; list-style: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .chips button {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -229,38 +254,18 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
   font-size: 15px;
 }
 .chips button:hover { border-color: var(--accent); color: var(--accent); }
-details summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 15px; width: fit-content; }
-details ul { margin: 8px 0 0; padding-inline-start: 22px; max-width: 68ch; }
-details li { margin-bottom: 5px; }
-
-/* summaries */
-.stack { display: flex; flex-direction: column; gap: 18px; }
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 22px 24px;
-  scroll-margin-top: 16px;
-}
-.card.flash, .entry.flash { animation: flash 1.6s ease; }
-@keyframes flash { 0%, 40% { background: var(--flash); } 100% { background: var(--surface); } }
-.card header { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 10px; }
-.card h3 { margin: 0; font-family: var(--font-display); font-size: 28px; line-height: 1.2; text-wrap: balance; }
-.card .src { color: var(--muted); font-size: 14.5px; margin: 0 0 12px; }
-.card .lead { font-size: 18.5px; font-weight: 600; margin: 0 0 12px; max-width: 66ch; }
-.card ul { margin: 0 0 16px; padding-inline-start: 22px; max-width: 68ch; }
-.card li { margin-bottom: 7px; }
-.card h4 { margin: 18px 0 6px; font-size: 13px; letter-spacing: 0.06em; color: var(--muted); }
-.card ol { margin: 0; padding-inline-start: 22px; max-width: 68ch; }
-.card ol li { color: var(--muted); }
+details summary { cursor: pointer; color: var(--accent); font-weight: 700; font-size: 15.5px; width: fit-content; }
+details ul { margin: 10px 0 0; padding-inline-start: 22px; max-width: 68ch; }
+details li { margin-bottom: 6px; }
 
 /* glossary */
 .dict { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
-.entry { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; scroll-margin-top: 16px; }
-.entry h3 { margin: 0 0 3px; font-family: var(--font-display); font-size: 22px; }
-.entry p { margin: 0 0 8px; }
-.entry .in { font-size: 14.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
-.entry .in button { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; font-size: 14.5px; text-align: right; }
+.entry { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 90px; }
+.entry .e-body { padding: 16px 18px; }
+.entry h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 22px; line-height: 1.25; }
+.entry p { margin: 0; }
+.entry .in { margin-top: auto; padding: 10px 18px; background: var(--tint); border-top: 1px solid var(--line); font-size: 14.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
+.entry .in button { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 700; font-size: 14.5px; text-align: right; }
 .entry .in button:hover { text-decoration: underline; }
 
 /* flashcards */
@@ -298,14 +303,22 @@ details li { margin-bottom: 5px; }
 .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 36px 24px; text-align: center; color: var(--muted); }
 .empty b { display: block; color: var(--ink); font-family: var(--font-display); font-size: 22px; margin-bottom: 4px; }
 
+@media (min-width: 861px) {
+  .bar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 8px); }
+}
 @media (max-width: 860px) {
-  .app { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .side { position: static; }
-  .courses { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
-  .course { flex: 0 0 auto; min-width: 190px; border-color: var(--line); background: var(--surface); }
-  .row { grid-template-columns: minmax(0, 1fr); }
-  .row .wk { padding-top: 0; }
-  .card { padding: 18px 16px; }
+  .app { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .side { position: static; padding: 12px; }
+  .courses { flex-direction: row; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; }
+  .course { flex: 0 0 auto; width: 230px; scroll-snap-align: start; }
+  .switch { width: 100%; }
+  .switch button { flex: 1 1 0; padding-inline: 8px; }
+  .tabs { flex-wrap: wrap; }
+  .tab { flex: 1 1 calc(50% - 6px); }
+  .search { max-width: none; flex-basis: 100%; }
+  .head { padding: 16px; }
+  .topic { padding: 14px; }
+  .topic-h h3 { font-size: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .card.flash, .entry.flash { animation: none; }
@@ -316,21 +329,26 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 </head>
 <body>
 
+<header class="topbar panel">
+  <div class="brand">מחברת חזרה</div>
+  <nav class="switch" id="tracks" role="tablist" aria-label="חוג"></nav>
+</header>
+
 <div class="app">
-  <aside class="side" aria-label="קורסים">
-    <div class="tracks" id="courses"></div>
+  <aside class="side panel" aria-label="קורסים">
+    <h2 id="side-title"></h2>
+    <div class="courses" id="courses"></div>
   </aside>
 
   <main>
-    <header class="head">
+    <header class="head panel">
       <p class="eyebrow" id="ctrack"></p>
       <h1 id="ctitle"></h1>
       <p id="cmeta"></p>
+      <details class="note" id="cnote" hidden></details>
     </header>
 
-    <p class="note" id="cnote" hidden></p>
-
-    <div class="bar">
+    <div class="bar panel">
       <div class="tabs" role="tablist" id="tabs"></div>
       <label class="search"><input id="q" type="search" placeholder="חיפוש בקורס" autocomplete="off"></label>
     </div>
@@ -344,8 +362,8 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 <script>
 /* ---------- courses ---------- */
 var TRACKS = [
-  { id: 'ps', name: 'מדעי המדינה' },
-  { id: 'mes', name: 'לימודי המזרח התיכון' }
+  { id: 'ps', name: 'מדעי המדינה', short: 'מדעי המדינה' },
+  { id: 'mes', name: 'לימודי המזרח התיכון', short: 'מזרח תיכון' }
 ];
 var COURSES = [
   { id: 'soc', track: 'ps', name: 'חברה, פוליטיקה ותרבות בעידן החדש' },
@@ -1872,23 +1890,34 @@ function termVisible(id) {
 function course() { return COURSES.filter(function (c) { return c.id === state.course; })[0]; }
 
 /* ---------- rendering ---------- */
-function renderCourses() {
-  $('courses').innerHTML = TRACKS.map(function (t) {
-    var items = COURSES.filter(function (c) { return c.track === t.id; }).map(function (c) {
-      var dd = DATA[c.id]; var meta = dd ? dd.topics.length + ' נושאים · ' + Object.keys(dd.terms).length + ' מושגים' : 'עדיין ריק';
-      return '<button class="course" data-course="' + c.id + '"' + (c.id === state.course ? ' aria-current="true"' : '') + '><b>' + c.name + '</b><small>' + meta + '</small></button>';
-    }).join('');
-    return '<div class="track"><h2>' + t.name + '</h2><div class="courses">' + items + '</div></div>';
+function trackOf() { return TRACKS.filter(function (t) { return t.id === course().track; })[0]; }
+function renderTracks() {
+  var cur = course().track;
+  $('tracks').innerHTML = TRACKS.map(function (t) {
+    var n = COURSES.filter(function (c) { return c.track === t.id; }).length;
+    return '<button role="tab" data-track="' + t.id + '" aria-selected="' + (t.id === cur) + '">' + t.short + '<small>' + n + ' קורסים</small></button>';
   }).join('');
+}
+function renderCourses() {
+  var t = trackOf();
+  $('side-title').textContent = 'קורסים · ' + t.name;
+  $('courses').innerHTML = COURSES.filter(function (c) { return c.track === t.id; }).map(function (c) {
+    var dd = DATA[c.id]; var meta = dd ? dd.topics.length + ' נושאים · ' + Object.keys(dd.terms).length + ' מושגים' : 'עדיין ריק';
+    return '<button class="course" data-course="' + c.id + '"' + (c.id === state.course ? ' aria-current="true"' : '') + '><b>' + c.name + '</b><small>' + meta + '</small></button>';
+  }).join('');
+}
+function selectCourse(id) {
+  state.course = id; loadCourse(id); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false;
+  renderAll();
 }
 function renderHead() {
   var c = course();
-  $('ctrack').textContent = TRACKS.filter(function (t) { return t.id === c.track; })[0].name;
+  $('ctrack').textContent = trackOf().name;
   $('ctitle').textContent = c.name;
   var has = !!DATA[c.id];
   $('cmeta').textContent = has ? TOPICS.length + ' נושאים, ' + Object.keys(TERMS).length + ' מושגים' : 'אין עדיין חומרים בקורס הזה';
   var nt = $('cnote'); var note = has && DATA[c.id].note;
-  nt.hidden = !note; nt.textContent = note || '';
+  nt.hidden = !note; nt.innerHTML = note ? '<summary>על הקורס</summary><p>' + note + '</p>' : '';
   $('tabs').innerHTML = VIEWS.map(function (v) {
     return '<button class="tab" role="tab" data-view="' + v[0] + '" aria-selected="' + (v[0] === state.view) + '">' + v[1] + '</button>';
   }).join('');
@@ -1906,30 +1935,31 @@ function viewReview() {
   var sc = srcChips();
   var tools = '<div class="tools">' + sc + (sc ? '<span class="sep">|</span>' : '') +
     '<button class="chip" data-quiz="1" aria-pressed="' + state.quiz + '">בדוק את עצמי</button></div>';
-  if (!list.length) return tools + '<div style="height:16px"></div>' + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
+  if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
   var rows = list.map(function (t) {
     var chips = termsOf(t).map(function (id) { return '<li><button data-term="' + id + '">' + TERMS[id].t.replace(/ \(.*\)/, '') + '</button></li>'; }).join('');
-    return '<article class="row" data-row="' + t.id + '">' +
-      '<div class="wk">' + t.wk + '</div><div>' +
-      '<h3>' + t.title + ' ' + tagHtml(t) + '</h3>' +
-      '<p class="tldr" title="לחיצה חושפת">' + rich(t.tldr) + '</p>' +
-      '<ul class="chips">' + chips + '</ul>' +
-      '<details><summary>נקודות עיקריות</summary><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></details>' +
-      '</div></article>';
+    return '<article class="topic row" data-row="' + t.id + '">' +
+      '<header class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
+      '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="tldr" title="לחיצה חושפת">' + rich(t.tldr) + '</p></div>' +
+      '<div class="sec"><span class="sec-l">מושגים בנושא</span><ul class="chips">' + chips + '</ul></div>' +
+      '<details class="sec"><summary>נקודות עיקריות</summary><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></details>' +
+      '</article>';
   }).join('');
-  return tools + '<div style="height:14px"></div><div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
+  return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
 }
 function viewSummaries() {
   var list = TOPICS.filter(topicVisible);
   var chips = srcChips();
-  var tools = chips ? '<div class="tools">' + chips + '</div><div style="height:16px"></div>' : '';
+  var tools = chips ? '<div class="tools">' + chips + '</div>' : '';
   if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
   return tools + '<div class="stack">' + list.map(function (t) {
-    return '<article class="card" id="topic-' + t.id + '"><header><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
+    return '<article class="topic card" id="topic-' + t.id + '">' +
+      '<header class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
       '<p class="src">מקור: ' + t.srcLabel + '</p>' +
-      '<p class="lead">' + rich(t.tldr) + '</p>' +
-      '<ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul>' +
-      '<h4>שאלות לבדיקה עצמית</h4><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></article>';
+      '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="lead">' + rich(t.tldr) + '</p></div>' +
+      '<div class="sec"><span class="sec-l">נקודות עיקריות</span><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="sec q-box"><span class="sec-l">שאלות לבדיקה עצמית</span><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' +
+      '</article>';
   }).join('') + '</div>';
 }
 function viewDictionary() {
@@ -1937,7 +1967,7 @@ function viewDictionary() {
   if (!ids.length) return empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
   return '<div class="dict">' + ids.map(function (id) {
     var where = topicsOfTerm(id).map(function (t) { return '<button data-topic="' + t.id + '">' + t.wk + ': ' + t.title + '</button>'; }).join('');
-    return '<article class="entry" id="term-' + id + '"><h3>' + TERMS[id].t + '</h3><p>' + TERMS[id].d + '</p><div class="in"><span>מופיע ב:</span>' + where + '</div></article>';
+    return '<article class="entry" id="term-' + id + '"><div class="e-body"><h3>' + TERMS[id].t + '</h3><p>' + TERMS[id].d + '</p></div><div class="in"><span>מופיע ב:</span>' + where + '</div></article>';
   }).join('') + '</div>';
 }
 function deckIds() {
@@ -1974,7 +2004,7 @@ function renderContent() {
   var v = { review: viewReview, summaries: viewSummaries, dictionary: viewDictionary, cards: viewCards }[state.view];
   $('content').innerHTML = v();
 }
-function renderAll() { renderCourses(); renderHead(); renderContent(); }
+function renderAll() { renderTracks(); renderCourses(); renderHead(); renderContent(); }
 
 /* ---------- popover ---------- */
 function hidePop() { $('pop').hidden = true; }
@@ -2023,7 +2053,8 @@ document.addEventListener('click', function (e) {
   if (d.goterm) return goTerm(d.goterm);
   if (d.term) { var same = !$('pop').hidden && $('pop').dataset.for === d.term + (el.closest('li') ? 'c' : 't'); if (same) return hidePop(); showPop(el, d.term); $('pop').dataset.for = d.term + (el.closest('li') ? 'c' : 't'); return; }
   hidePop();
-  if (d.course) { state.course = d.course; loadCourse(d.course); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false; return renderAll(); }
+  if (d.track) { var f = COURSES.filter(function (c) { return c.track === d.track; })[0]; if (f) selectCourse(f.id); return; }
+  if (d.course) return selectCourse(d.course);
   if (d.view) return setView(d.view);
   if (d.src) { state.src = d.src; return renderContent(); }
   if (d.quiz) { state.quiz = !state.quiz; return renderContent(); }
