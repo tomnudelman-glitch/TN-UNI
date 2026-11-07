@@ -359,10 +359,12 @@ details li { margin-bottom: 6px; }
 .dg-tl .y { padding-block: 6px; direction: ltr; text-align: left; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 .dg-tl .t { position: relative; padding: 6px 18px 6px 0; padding-inline: 18px 0; border-inline-start: 2px solid var(--line); }
 .dg-tl .t::before { content: ""; position: absolute; inset-inline-start: -7px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
-.photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-.photo { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--tint); }
-.photo img { display: block; width: 100%; height: auto; max-height: 340px; object-fit: cover; }
-.photo figcaption { padding: 8px 12px; font-size: 14px; color: var(--muted); }
+.photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 300px)); gap: 12px; justify-content: start; }
+.photo { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--tint); }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 30%; background: var(--tint); }
+.photo.portrait img { aspect-ratio: 4 / 5; object-position: center 15%; }
+.photo.doc img { aspect-ratio: auto; max-height: 300px; object-fit: contain; }
+.photo figcaption { padding: 8px 12px; font-size: 14px; color: var(--muted); line-height: 1.4; }
 @media (min-width: 861px) {
   .bar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 8px); }
 }
@@ -2009,7 +2011,27 @@ function viewReview() {
 }
 /* ---------- diagrams (drawn from the summaries themselves) and photo slots ---------- */
 var HUES = { soc: 212, isr: 238, gov: 275, rm: 310, thought: 28, mehist: 180, islam: 150, ott: 352, orient: 42 };
-var IMGS = {}; /* 'course:topic': [{ src, cap, credit }] */
+var IMGS = { /* 'course:topic': [{ src, cap, kind: 'portrait' | 'doc' }] */
+  'islam:i1': [{ src: 'img/arabiamap.jpg', cap: 'חצי האי ערב ושתי האימפריות השכנות: הביזנטית והפרסית', kind: 'doc' }],
+  'islam:i2': [{ src: 'img/tent.jpg', cap: 'אוהל בדואי' }],
+  'islam:i3': [{ src: 'img/kaaba.jpg', cap: 'הכעבה במסגד אל-חראם במכה' }],
+  'mehist:m6': [{ src: 'img/quran.jpg', cap: 'דף ממכתב יד עתיק של הקוראן' }],
+  'mehist:m11': [{ src: 'img/najaf.jpg', cap: "מקדש עלי בנג'אף, עיראק" }, { src: 'img/karbala.jpg', cap: 'המקדשים בכרבלא, עיראק' }],
+  'mehist:m12': [{ src: 'img/sunnishia.jpg', cap: 'פיזור סונים ושיעים בעולם המוסלמי', kind: 'doc' }],
+  'ott:o1': [{ src: 'img/ottomap.jpg', cap: "מפה של האימפריה העות'מנית", kind: 'doc' }, { src: 'img/suleymaniye.jpg', cap: 'מסגד סולימאן באיסטנבול' }],
+  'thought:t3': [{ src: 'img/parthenon.jpg', cap: 'הפרתנון באקרופוליס של אתונה' }],
+  'thought:t7': [{ src: 'img/socrates.jpg', cap: "מותו של סוקרטס, ז'אק-לואי דויד (1787)" }],
+  'thought:t8': [{ src: 'img/athens.jpg', cap: 'אסכולת אתונה, רפאל (בערך 1510)' }],
+  'soc:c2': [{ src: 'img/vitruvian.jpg', cap: "האדם הוויטרובי, לאונרדו דה וינצ'י", kind: 'doc' }],
+  'soc:c3': [{ src: 'img/machiavelli.jpg', cap: 'ניקולו מקיאוולי', kind: 'portrait' }],
+  'soc:c5': [{ src: 'img/magna.jpg', cap: 'המגנה כרטה (1215)', kind: 'doc' }],
+  'soc:c7': [{ src: 'img/luther.jpg', cap: 'מרטין לותר', kind: 'portrait' }],
+  'soc:c11': [{ src: 'img/galileo.jpg', cap: 'גלילאו גליליי', kind: 'portrait' }, { src: 'img/newton.jpg', cap: 'אייזק ניוטון', kind: 'portrait' }],
+  'gov:g1': [{ src: 'img/weber.jpg', cap: 'מקס ובר', kind: 'portrait' }],
+  'gov:g2': [{ src: 'img/popper.jpg', cap: 'קרל פופר', kind: 'portrait' }],
+  'gov:g3': [{ src: 'img/madison.jpg', cap: 'ג׳יימס מדיסון', kind: 'portrait' }, { src: 'img/federalist.jpg', cap: 'עמוד השער של "הפדרליסט" (1788)', kind: 'doc' }],
+  'isr:s3': [{ src: 'img/knesset.jpg', cap: 'בניין הכנסת בירושלים' }]
+};
 var FIGS = {
   'mehist:m5': { cap: 'חמשת היסודות המעשיים (ארכאן אל-אסלאם)', cards: [
     { n: 1, t: 'שהאדה', d: 'העדות: אמירת האמונה' },
@@ -2069,7 +2091,7 @@ function figHtml(cid, tid) {
 function photosHtml(cid, tid) {
   var a = IMGS[cid + ':' + tid]; if (!a || !a.length) return '';
   return '<div class="photos">' + a.map(function (i) {
-    return '<figure class="photo"><img src="' + i.src + '" alt="' + (i.cap || '') + '" loading="lazy"><figcaption>' + (i.cap || '') + (i.credit ? ' · ' + i.credit : '') + '</figcaption></figure>';
+    return '<figure class="photo' + (i.kind ? ' ' + i.kind : '') + '"><img src="' + i.src + '" alt="' + (i.cap || '') + '" loading="lazy"><figcaption>' + (i.cap || '') + (i.credit ? ' · ' + i.credit : '') + '</figcaption></figure>';
   }).join('') + '</div>';
 }
 function viewSummaries() {
