@@ -490,6 +490,15 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .resume { background: #f3dd9a; color: #2a3042; border: 0; border-radius: 16px; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2); padding: 10px 22px; font-weight: 700; font-size: 17px; transition: transform 0.1s, box-shadow 0.1s; }
 .resume:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2); }
 .resume:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2); }
+.seals { display: flex; align-items: center; gap: 18px; margin-top: 6px; }
+.seal { display: block; height: auto; }
+.seal.flag { width: 120px; border: 3px solid #ffffff; border-radius: 8px; box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.22); transform: rotate(-4deg); }
+.seal.emblem { width: 78px; filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.22)); transform: rotate(3deg); }
+@media (min-width: 780px) {
+  .seals { position: absolute; inset-inline-end: auto; left: clamp(28px, 6vw, 72px); top: 50%; transform: translateY(-50%); flex-direction: column; gap: 22px; margin: 0; }
+  .seal.flag { width: 150px; }
+  .seal.emblem { width: 104px; }
+}
 .doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 24px; }
 .door { background: var(--surface); border: 2px solid var(--outline); border-radius: 26px; box-shadow: 5px 5px 0 var(--pop-c); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
 .door-art { aspect-ratio: 400 / 176; max-height: 200px; background: hsl(var(--dh) var(--door-s) var(--door-l)); border-bottom: 2px solid var(--outline); }
@@ -541,6 +550,10 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
     <p class="lede">כל הסיכומים, המושגים והכרטיסיות במקום אחד, קצר וברור, לריצה מהירה לפני שיעור או מבחן.</p>
     <div class="stats" id="hero-stats"></div>
     <button class="resume" id="resume" hidden></button>
+    <div class="seals">
+      <img class="seal emblem" src="img/emblem.png" alt="סמל מדינת ישראל" width="283" height="353">
+      <img class="seal flag" src="img/flagil.png" alt="דגל ישראל" width="370" height="270">
+    </div>
   </section>
   <div class="doors" id="doors"></div>
   <p class="foot">הלוגו למעלה מחזיר לכאן מכל מקום באתר.</p>
