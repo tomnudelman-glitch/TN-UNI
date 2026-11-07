@@ -12,13 +12,15 @@
 <style>
 /* Layout: right-hand course rail + one working column. Tabs switch between four ways to revise: quick pass, full summaries, glossary, flashcards. */
 :root {
+  --h: 180;
   --bg: #eef1f3;
+  --shadow: 0 1px 2px rgba(20, 40, 50, 0.06), 0 10px 26px -14px rgba(20, 40, 50, 0.18);
   --surface: #ffffff;
   --ink: #16222b;
   --muted: #566672;
   --line: #d6dde2;
-  --accent: #0e6b6b;
-  --accent-soft: #d9eeee;
+  --accent: hsl(var(--h) 72% 26%);
+  --accent-soft: hsl(var(--h) 42% 91%);
   --accent-ink: #ffffff;
   --warm: #86500c;
   --warm-soft: #f6e6cc;
@@ -34,13 +36,14 @@
     --ink: #e6edf1;
     --muted: #96a7b3;
     --line: #2a3a44;
-    --accent: #5cc4c0;
-    --accent-soft: #16393a;
-    --accent-ink: #0b1a1a;
+    --accent: hsl(var(--h) 48% 64%);
+    --accent-soft: hsl(var(--h) 38% 18%);
+    --accent-ink: hsl(var(--h) 40% 8%);
     --warm: #e3a857;
     --warm-soft: #3a2c14;
     --flash: #4a4116;
     --tint: #1c2a32;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     color-scheme: dark;
   }
 }
@@ -50,13 +53,14 @@
   --ink: #e6edf1;
   --muted: #96a7b3;
   --line: #2a3a44;
-  --accent: #5cc4c0;
-  --accent-soft: #16393a;
-  --accent-ink: #0b1a1a;
+  --accent: hsl(var(--h) 48% 64%);
+  --accent-soft: hsl(var(--h) 38% 18%);
+  --accent-ink: hsl(var(--h) 40% 8%);
   --warm: #e3a857;
   --warm-soft: #3a2c14;
   --flash: #4a4116;
   --tint: #1c2a32;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 
@@ -64,6 +68,8 @@
 html { direction: rtl; }
 body {
   background: var(--bg);
+  background-image: radial-gradient(900px 340px at 85% -80px, var(--accent-soft), transparent 70%);
+  background-repeat: no-repeat;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 17px;
@@ -76,7 +82,7 @@ button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
 
 /* top bar: brand + department switch */
 .topbar {
@@ -89,7 +95,8 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: space-between;
 }
-.brand { font-family: var(--font-display); font-size: 26px; line-height: 1.1; }
+.brand { font-family: var(--font-display); font-size: 26px; line-height: 1.1; display: flex; align-items: center; gap: 10px; }
+.mark { width: 30px; height: 30px; color: var(--accent); flex: none; }
 .switch { display: flex; gap: 6px; background: var(--tint); border: 1px solid var(--line); border-radius: 12px; padding: 5px; }
 .switch button {
   background: transparent;
@@ -140,7 +147,21 @@ button { cursor: pointer; }
 
 /* main column */
 main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-.head { padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.head { position: relative; overflow: hidden; padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; background: linear-gradient(135deg, var(--accent-soft), var(--surface) 75%); }
+.head::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 42%;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 1.5px, transparent 1.5px 24px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 1.5px, transparent 1.5px 24px);
+  -webkit-mask-image: linear-gradient(to right, #000, transparent);
+  mask-image: linear-gradient(to right, #000, transparent);
+}
+.head > * { position: relative; z-index: 1; }
 .eyebrow { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); }
 .head h1 {
   margin: 0;
@@ -173,7 +194,7 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .search input::placeholder { color: var(--muted); }
 
 #content { display: flex; flex-direction: column; gap: 16px; }
-.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
 .chip {
   background: var(--tint);
   border: 1px solid var(--line);
@@ -224,7 +245,7 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 
 /* topic boxes (quick review + summaries) */
 .rows, .stack { display: flex; flex-direction: column; gap: 16px; }
-.topic { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 90px; }
+.topic { background: var(--surface); border: 1px solid var(--line); border-inline-start: 5px solid var(--accent); border-radius: 16px; box-shadow: var(--shadow); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 90px; }
 .topic-h { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
 .topic-h h3 { margin: 0; font-family: var(--font-display); font-size: 25px; line-height: 1.25; text-wrap: balance; flex: 1 1 220px; }
 .wk { background: var(--tint); border: 1px solid var(--line); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; }
@@ -260,7 +281,7 @@ details li { margin-bottom: 6px; }
 
 /* glossary */
 .dict { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
-.entry { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 90px; }
+.entry { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 90px; }
 .entry .e-body { padding: 16px 18px; }
 .entry h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 22px; line-height: 1.25; }
 .entry p { margin: 0; }
@@ -303,6 +324,45 @@ details li { margin-bottom: 6px; }
 .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 36px 24px; text-align: center; color: var(--muted); }
 .empty b { display: block; color: var(--ink); font-family: var(--font-display); font-size: 22px; margin-bottom: 4px; }
 
+/* diagrams and photos */
+.fig, .photo { margin: 0; }
+.fig { container-type: inline-size; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.figin { display: flex; flex-direction: column; gap: 10px; }
+.fig figcaption { color: var(--muted); font-size: 14.5px; text-align: center; }
+.dg-top { text-align: center; font-weight: 700; background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.dg-bar { display: flex; height: 38px; border-radius: 10px; overflow: hidden; font-weight: 700; }
+.dg-bar span { display: flex; align-items: center; justify-content: center; white-space: nowrap; min-width: 0; padding: 0 6px; background: var(--accent); color: var(--accent-ink); }
+.dg-bar span + span { background: var(--warm); color: var(--surface); }
+.dg-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 10px; }
+.dg-card { background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.dg-n { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; flex: none; }
+.dg-card b, .dg-step b { font-family: var(--font-display); font-weight: 400; font-size: 20px; line-height: 1.25; }
+.dg-d { font-size: 14.5px; color: var(--muted); line-height: 1.4; }
+.dg-steps { display: flex; gap: 30px; align-items: stretch; }
+.dg-step { position: relative; flex: 1 1 0; min-width: 0; background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; }
+.dg-step.hl { background: var(--accent-soft); border-color: var(--accent); }
+.dg-step + .dg-step::before { content: "←"; position: absolute; inset-inline-start: -27px; top: 50%; transform: translateY(-50%); width: 24px; text-align: center; color: var(--accent); font-weight: 700; font-size: 20px; }
+.dg-k { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); }
+.dg-steps.v { flex-direction: column; gap: 26px; }
+.dg-steps.v .dg-step + .dg-step::before { content: "↓"; inset-inline-start: auto; left: 50%; top: -25px; transform: translateX(-50%); }
+@container (max-width: 620px) {
+  .dg-steps:not(.v) { flex-direction: column; gap: 26px; }
+  .dg-steps:not(.v) .dg-step + .dg-step::before { content: "↓"; inset-inline-start: auto; left: 50%; top: -25px; transform: translateX(-50%); }
+}
+.dg-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.dg-col { background: var(--tint); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.dg-col h4 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 19px; color: var(--accent); line-height: 1.25; }
+.dg-col ul { margin: 0; padding-inline-start: 18px; font-size: 15.5px; }
+.dg-col li { margin-bottom: 4px; }
+.dg-tl { list-style: none; margin: 0; padding: 0; }
+.dg-tl li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 12px; }
+.dg-tl .y { padding-block: 6px; direction: ltr; text-align: left; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.dg-tl .t { position: relative; padding: 6px 18px 6px 0; padding-inline: 18px 0; border-inline-start: 2px solid var(--line); }
+.dg-tl .t::before { content: ""; position: absolute; inset-inline-start: -7px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+.photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.photo { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--tint); }
+.photo img { display: block; width: 100%; height: auto; max-height: 340px; object-fit: cover; }
+.photo figcaption { padding: 8px 12px; font-size: 14px; color: var(--muted); }
 @media (min-width: 861px) {
   .bar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 8px); }
 }
@@ -330,7 +390,7 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 <body>
 
 <header class="topbar panel">
-  <div class="brand">מחברת חזרה</div>
+  <div class="brand"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6" width="20" height="20" fill="currentColor"/><rect x="6" y="6" width="20" height="20" fill="currentColor" opacity=".5" transform="rotate(45 16 16)"/></svg>מחברת חזרה</div>
   <nav class="switch" id="tracks" role="tablist" aria-label="חוג"></nav>
 </header>
 
@@ -1947,6 +2007,71 @@ function viewReview() {
   }).join('');
   return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
 }
+/* ---------- diagrams (drawn from the summaries themselves) and photo slots ---------- */
+var HUES = { soc: 212, isr: 238, gov: 275, rm: 310, thought: 28, mehist: 180, islam: 150, ott: 352, orient: 42 };
+var IMGS = {}; /* 'course:topic': [{ src, cap, credit }] */
+var FIGS = {
+  'mehist:m5': { cap: 'חמשת היסודות המעשיים (ארכאן אל-אסלאם)', cards: [
+    { n: 1, t: 'שהאדה', d: 'העדות: אמירת האמונה' },
+    { n: 2, t: "צ'אלאט", d: 'חמש תפילות ביום' },
+    { n: 3, t: 'זכאת', d: 'צדקה' },
+    { n: 4, t: 'סאום', d: 'צום הרמדאן' },
+    { n: 5, t: "חאג'", d: 'עלייה לרגל לפחות פעם בחיים' } ] },
+  'mehist:m11': { cap: 'סונים ושיעים, לפי השיעור', bar: [{ pct: 85, label: 'סונים 85%' }, { pct: 15, label: '15%' }], cols: [
+    { title: 'סונים', lines: ['כ-85% מהמוסלמים', 'רואים בשיעים פגיעה באחדות ויציאה מהעיזמא'] },
+    { title: 'שיעים', lines: ['כ-15%, המיעוט הפורש', 'הולכים אחרי עלי, חתנו ובן דודו של מוחמד', 'מדגישים קשרי דם ומשפחת הנביא (אהל אל-בית)', "מקומות קדושים: נג'אף וכרבלא בעיראק. מרכז לימוד: קום באיראן"] } ] },
+  'rm:r3': { cap: 'חמשת שלבי המחקר המדעי', steps: [
+    { n: 1, t: 'זיהוי התופעה' },
+    { n: 2, t: 'שאלת מחקר והשערות' },
+    { n: 3, t: 'תכנון המחקר', d: 'השלב המשמעותי ביותר', hl: 1 },
+    { n: 4, t: 'איסוף נתונים וביצוע' },
+    { n: 5, t: 'מסקנות ודיון' } ] },
+  'rm:r6': { cap: 'שתי דרכי חשיבה במחקר', cols: [
+    { title: 'אינדוקציה: מהפרט אל הכלל', steps: [{ t: 'רואים תופעה מעניינת' }, { t: 'משערים השערות ובוחנים' }, { t: 'מפתחים תיאוריה כללית יותר', hl: 1 }] },
+    { title: 'דדוקציה: מהכלל אל הפרט', steps: [{ t: 'מתחילים מתיאוריה ושאלת מחקר', hl: 1 }, { t: 'גוזרים ממנה השערות' }, { t: 'מיישמים שיטת מחקר ובודקים אם התיאוריה מחזיקה' }] } ] },
+  'rm:r9': { cap: 'בכל הסבר מדעי: מגורמים למשתנים', steps: [
+    { k: 'גורם מסביר', t: 'משתנה בלתי תלוי', hl: 1 },
+    { k: 'גורם מוסבר', t: 'משתנה תלוי' } ] },
+  'thought:t3': { cap: 'המוסדות של אתונה הדמוקרטית', top: 'כ-250 אלף תושבים, מהם כ-40 אלף אזרחים בעלי זכויות פוליטיות', cols: [
+    { title: 'אסיפת העם', lines: ['כל גבר מעל 20', 'כל כ-10 ימים, כ-2,000 עד 3,000 משתתפים', 'מחליטה בנושאי חוץ, ביטחון, מסים, שיפוט וחקיקה'] },
+    { title: 'מועצת ה-500', lines: ['נבחרה בהגרלה', 'הכינה את החומר לאסיפה', 'לא ממשלה'] },
+    { title: 'בתי הדין', lines: ['500 מושבעים בעשרה בתי דין', 'בלי שופטים ועורכי דין', 'התובע והנתבע מנסים לשכנע ישירות'] } ] },
+  'soc:c1': { cap: 'ציר זמן של אירועים שמופיעים בהרצאות', tl: [
+    { y: '1215', t: 'המגנה כרטה' },
+    { y: '1337–1453', t: 'מלחמת מאה השנים' },
+    { y: '1347–1351', t: 'המגפה השחורה' },
+    { y: '1490–1530', t: 'תור הזהב של אמנות הרנסנס' },
+    { y: '1517', t: 'לותר ו-95 התזות' },
+    { y: '1555', t: 'שלום אוגסבורג' },
+    { y: '1618–1648', t: 'מלחמת שלושים השנים' },
+    { y: '1633', t: 'משפט גלילאו' },
+    { y: '1648', t: 'שלום וסטפליה' },
+    { y: '1687', t: 'ניוטון מפרסם את "העקרונות המתמטיים"' } ] }
+};
+function stepsHtml(arr, v) {
+  return '<div class="dg-steps' + (v ? ' v' : '') + '">' + arr.map(function (x) {
+    return '<div class="dg-step' + (x.hl ? ' hl' : '') + '">' + (x.n ? '<span class="dg-n">' + x.n + '</span>' : '') + (x.k ? '<span class="dg-k">' + x.k + '</span>' : '') + '<b>' + x.t + '</b>' + (x.d ? '<span class="dg-d">' + x.d + '</span>' : '') + '</div>';
+  }).join('') + '</div>';
+}
+function figHtml(cid, tid) {
+  var f = FIGS[cid + ':' + tid]; if (!f) return '';
+  var h = '';
+  if (f.top) h += '<div class="dg-top">' + f.top + '</div>';
+  if (f.bar) h += '<div class="dg-bar">' + f.bar.map(function (b) { return '<span style="flex:' + b.pct + ' 1 0">' + b.label + '</span>'; }).join('') + '</div>';
+  if (f.cards) h += '<div class="dg-cards">' + f.cards.map(function (c) { return '<div class="dg-card"><span class="dg-n">' + c.n + '</span><b>' + c.t + '</b><span class="dg-d">' + c.d + '</span></div>'; }).join('') + '</div>';
+  if (f.steps) h += stepsHtml(f.steps, false);
+  if (f.cols) h += '<div class="dg-cols">' + f.cols.map(function (c) {
+    return '<div class="dg-col"><h4>' + c.title + '</h4>' + (c.lines ? '<ul>' + c.lines.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul>' : '') + (c.steps ? stepsHtml(c.steps, true) : '') + '</div>';
+  }).join('') + '</div>';
+  if (f.tl) h += '<ol class="dg-tl">' + f.tl.map(function (e) { return '<li><span class="y">' + e.y + '</span><span class="t">' + e.t + '</span></li>'; }).join('') + '</ol>';
+  return '<figure class="fig"><div class="figin">' + h + '</div><figcaption>' + f.cap + '</figcaption></figure>';
+}
+function photosHtml(cid, tid) {
+  var a = IMGS[cid + ':' + tid]; if (!a || !a.length) return '';
+  return '<div class="photos">' + a.map(function (i) {
+    return '<figure class="photo"><img src="' + i.src + '" alt="' + (i.cap || '') + '" loading="lazy"><figcaption>' + (i.cap || '') + (i.credit ? ' · ' + i.credit : '') + '</figcaption></figure>';
+  }).join('') + '</div>';
+}
 function viewSummaries() {
   var list = TOPICS.filter(topicVisible);
   var chips = srcChips();
@@ -1957,6 +2082,7 @@ function viewSummaries() {
       '<header class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
       '<p class="src">מקור: ' + t.srcLabel + '</p>' +
       '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="lead">' + rich(t.tldr) + '</p></div>' +
+      photosHtml(state.course, t.id) + figHtml(state.course, t.id) +
       '<div class="sec"><span class="sec-l">נקודות עיקריות</span><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' +
       '<div class="sec q-box"><span class="sec-l">שאלות לבדיקה עצמית</span><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' +
       '</article>';
@@ -2004,7 +2130,7 @@ function renderContent() {
   var v = { review: viewReview, summaries: viewSummaries, dictionary: viewDictionary, cards: viewCards }[state.view];
   $('content').innerHTML = v();
 }
-function renderAll() { renderTracks(); renderCourses(); renderHead(); renderContent(); }
+function renderAll() { document.documentElement.style.setProperty('--h', HUES[state.course] || 180); renderTracks(); renderCourses(); renderHead(); renderContent(); }
 
 /* ---------- popover ---------- */
 function hidePop() { $('pop').hidden = true; }
