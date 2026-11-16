@@ -283,8 +283,16 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 
 /* topic boxes (quick review + summaries) */
 .rows, .stack { display: flex; flex-direction: column; gap: 16px; }
-.topic { background: var(--surface); border: 1px solid var(--line); border-inline-start: 5px solid var(--accent); border-radius: 16px; box-shadow: var(--shadow); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 90px; }
+.topic { background: var(--surface); border: 1px solid var(--line); border-inline-start: 5px solid var(--accent); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 20px; display: block; scroll-margin-top: 90px; }
+.topic[open] { padding-block: 18px; }
+.topic-body { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
 .topic-h { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+summary.topic-h { cursor: pointer; list-style: none; color: inherit; font-weight: inherit; font-size: inherit; width: auto; }
+summary.topic-h::-webkit-details-marker { display: none; }
+summary.topic-h:hover h3, summary.topic-h:focus-visible h3 { color: var(--accent); }
+.opener { margin-inline-start: auto; color: var(--accent); font-weight: 700; font-size: 14.5px; white-space: nowrap; }
+.opener::after { content: "הרחבה ▾"; }
+.topic[open] > summary .opener::after { content: "סגירה ▴"; }
 .topic-h h3 { margin: 0; font-family: var(--font-display); font-size: 25px; line-height: 1.25; text-wrap: balance; flex: 1 1 220px; }
 .wk { background: var(--tint); border: 1px solid var(--line); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; }
 .topic .src { margin: -4px 0 0; color: var(--muted); font-size: 14.5px; }
@@ -302,6 +310,7 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .sec ul, .sec ol { margin: 0; padding-inline-start: 22px; max-width: 68ch; }
 .sec li { margin-bottom: 7px; }
 .sec li:last-child { margin-bottom: 0; }
+.tools .count { color: var(--muted); font-size: 14.5px; margin-inline-start: auto; }
 .sec ol li { color: var(--ink); }
 .quiz .row:not(.shown) .tldr { filter: blur(7px); cursor: pointer; user-select: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -417,8 +426,11 @@ details li { margin-bottom: 6px; }
   .tab { flex: 1 1 calc(50% - 6px); }
   .search { max-width: none; flex-basis: 100%; }
   .head { padding: 16px; }
-  .topic { padding: 14px; }
-  .topic-h h3 { font-size: 22px; }
+  .topic { padding: 12px 14px; }
+  .topic[open] { padding-block: 14px; }
+  .topic-h h3 { font-size: 21px; flex-basis: 100%; }
+  .opener { margin-inline-start: 0; }
+  .tools .count { margin-inline-start: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .card.flash, .entry.flash { animation: none; }
@@ -2740,21 +2752,34 @@ function srcChips() {
   return opts.map(function (o) { return '<button class="chip" data-src="' + o[0] + '" aria-pressed="' + (state.src === o[0]) + '">' + o[1] + '</button>'; }).join('');
 }
 function empty(title, text) { return '<div class="empty"><b>' + title + '</b>' + text + '</div>'; }
+/* newest topics first, and open everything while a search is running */
+function orderedTopics() { return TOPICS.filter(topicVisible).reverse(); }
+function openAll() { return !!state.q; }
+function topicHead(t) {
+  return '<summary class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' +
+    tagHtml(t) + '<span class="opener" aria-hidden="true"></span></summary>';
+}
+function listTools(n, extra) {
+  var sc = srcChips();
+  return '<div class="tools">' + sc + (sc ? '<span class="sep">|</span>' : '') +
+    '<button class="chip" data-expand="1">' + (openAll() ? 'סגור הכול' : 'פתח הכול') + '</button>' +
+    (extra || '') + '<span class="count">' + n + ' נושאים</span></div>';
+}
 
 function viewReview() {
-  var list = TOPICS.filter(topicVisible);
-  var sc = srcChips();
-  var tools = '<div class="tools">' + sc + (sc ? '<span class="sep">|</span>' : '') +
-    '<button class="chip" data-quiz="1" aria-pressed="' + state.quiz + '">בדוק את עצמי</button></div>';
+  var list = orderedTopics();
+  var tools = listTools(list.length, '<button class="chip" data-quiz="1" aria-pressed="' + state.quiz + '">בדוק את עצמי</button>');
   if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
+  var op = openAll() ? ' open' : '';
   var rows = list.map(function (t) {
     var chips = termsOf(t).map(function (id) { return '<li><button data-term="' + id + '">' + TERMS[id].t.replace(/ \(.*\)/, '') + '</button></li>'; }).join('');
-    return '<article class="topic row" data-row="' + t.id + '">' +
-      '<header class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
+    return '<details class="topic row"' + op + ' data-row="' + t.id + '" id="row-' + t.id + '">' +
+      topicHead(t) +
+      '<div class="topic-body">' +
       '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="tldr" title="לחיצה חושפת">' + rich(t.tldr) + '</p></div>' +
       '<div class="sec"><span class="sec-l">מושגים בנושא</span><ul class="chips">' + chips + '</ul></div>' +
       '<details class="sec"><summary>נקודות עיקריות</summary><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></details>' +
-      '</article>';
+      '</div></details>';
   }).join('');
   return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
 }
@@ -2844,19 +2869,20 @@ function photosHtml(cid, tid) {
   }).join('') + '</div>';
 }
 function viewSummaries() {
-  var list = TOPICS.filter(topicVisible);
-  var chips = srcChips();
-  var tools = chips ? '<div class="tools">' + chips + '</div>' : '';
+  var list = orderedTopics();
+  var tools = listTools(list.length);
   if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
+  var op = openAll() ? ' open' : '';
   return tools + '<div class="stack">' + list.map(function (t) {
-    return '<article class="topic card" id="topic-' + t.id + '">' +
-      '<header class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' + tagHtml(t) + '</header>' +
+    return '<details class="topic card"' + op + ' id="topic-' + t.id + '">' +
+      topicHead(t) +
+      '<div class="topic-body">' +
       '<p class="src">מקור: ' + t.srcLabel + '</p>' +
       '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="lead">' + rich(t.tldr) + '</p></div>' +
       photosHtml(state.course, t.id) + figHtml(state.course, t.id) +
       '<div class="sec"><span class="sec-l">נקודות עיקריות</span><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' +
       '<div class="sec q-box"><span class="sec-l">שאלות לבדיקה עצמית</span><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' +
-      '</article>';
+      '</div></details>';
   }).join('') + '</div>';
 }
 function viewDictionary() {
@@ -2994,7 +3020,9 @@ function goTerm(id) {
 function goTopic(id) {
   hidePop(); state.q = ''; $('q').value = ''; state.src = 'all';
   setView('summaries');
-  flashEl($('topic-' + id));
+  var box = $('topic-' + id);
+  if (box) box.open = true;
+  flashEl(box);
 }
 
 /* ---------- events ---------- */
@@ -3012,6 +3040,13 @@ document.addEventListener('click', function (e) {
   if (d.course) return selectCourse(d.course);
   if (d.view) return setView(d.view);
   if (d.src) { state.src = d.src; return renderContent(); }
+  if (d.expand) {
+    var boxes = [].slice.call(document.querySelectorAll('#content .topic'));
+    var toOpen = boxes.some(function (b) { return !b.open; });
+    boxes.forEach(function (b) { b.open = toOpen; });
+    el.textContent = toOpen ? 'סגור הכול' : 'פתח הכול';
+    return;
+  }
   if (d.quiz) { state.quiz = !state.quiz; return renderContent(); }
   if (d.topic) return goTopic(d.topic);
   if (d.flip) { state.flipped = !state.flipped; return renderContent(); }
