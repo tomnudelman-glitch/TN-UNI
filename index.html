@@ -474,6 +474,7 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .tab[data-view="summaries"]::before { content: "\1F4D6\00A0"; }
 .tab[data-view="dictionary"]::before { content: "\1F524\00A0"; }
 .tab[data-view="cards"]::before { content: "\1F0CF\00A0"; }
+.tab[data-view="exam"]::before { content: "\1F4DD\00A0"; }
 .search input { border: 2px solid var(--outline); border-radius: 14px; background: var(--surface); }
 .chip { border: 2px solid var(--outline); background: var(--surface); }
 .chip[aria-pressed="true"] { box-shadow: 2px 2px 0 var(--pop-c); }
@@ -547,6 +548,45 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .legal .src-list li { margin-bottom: 7px; }
 .legal b { color: var(--ink); }
 .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer; }
+#content { scroll-margin-top: 96px; }
+.exam { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 26px 30px 30px; }
+.exam-head { border-bottom: 3px solid var(--accent); padding-bottom: 14px; margin-bottom: 8px; }
+.exam-kicker { margin: 0; font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; color: var(--accent); }
+.exam-head h1 { font-family: var(--font-display); font-size: 31px; margin: 2px 0 4px; color: var(--ink); text-wrap: balance; }
+.exam-meta { margin: 0; color: var(--muted); font-size: 14.5px; }
+.exam-sec { margin-top: 30px; }
+.exam-sec > h2 { font-family: var(--font-display); font-size: 24px; margin: 0 0 2px; color: var(--ink);
+  border-inline-start: 5px solid var(--accent); padding-inline-start: 12px; text-wrap: balance; }
+.exam-sec > .src { margin: 0 0 14px 0; padding-inline-start: 17px; }
+.exam-topic { margin-bottom: 18px; }
+.exam-topic h3 { font-family: var(--font-display); font-size: 19px; margin: 0 0 6px; color: var(--ink); }
+.exam-lead { margin: 0 0 8px; font-weight: 500; }
+.exam-topic ul { margin: 0; padding-inline-start: 20px; }
+.exam-topic li { margin-bottom: 7px; }
+.exam-block { background: var(--tint); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; margin-top: 14px; }
+.exam-block h3 { font-family: var(--font-display); font-size: 15.5px; margin: 0 0 8px; color: var(--ink); letter-spacing: 0.02em; }
+.exam-block dl { margin: 0; }
+.exam-block dt { font-weight: 700; color: var(--ink); margin-top: 8px; }
+.exam-block dt:first-child { margin-top: 0; }
+.exam-block dd { margin: 2px 0 0; }
+.exam-block ol { margin: 0; padding-inline-start: 20px; }
+.exam-block li { margin-bottom: 5px; }
+.exam-hint { color: var(--muted); font-size: 13.5px; margin: 10px 2px 0; }
+@media (max-width: 760px) {
+  .exam { padding: 18px 16px 22px; }
+  .exam-head h1 { font-size: 25px; }
+  .exam-sec > h2 { font-size: 21px; }
+}
+@media print {
+  .topbar, .side, .bar, .tools, .shellfoot, .exam-hint, #home { display: none !important; }
+  .app { display: block; }
+  .head.panel { border: 0; box-shadow: none; padding: 0 0 8px; }
+  .exam { border: 0; box-shadow: none; padding: 0; }
+  .exam-sec { page-break-inside: auto; }
+  .exam-topic, .exam-block { page-break-inside: avoid; }
+  .exam-sec > h2 { page-break-after: avoid; }
+  .term, .gloss { background: none !important; border: 0 !important; color: inherit !important; }
+}
 .shellfoot { max-width: 1180px; margin: 22px auto 8px; padding-inline: 4px; color: var(--muted); font-size: 13.5px; text-align: center; line-height: 1.6; }
 @keyframes bob { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-6px) rotate(var(--r, 0deg)); } }
 @media (prefers-reduced-motion: no-preference) {
@@ -2716,12 +2756,13 @@ function loadCourse(id) { var d = DATA[id]; TERMS = d ? d.terms : {}; TOPICS = d
 var VIEWS = [
   ['review', 'חזרה מהירה'],
   ['summaries', 'סיכומים'],
+  ['exam', 'הכנה לבוחן'],
   ['dictionary', 'מילון מושגים'],
   ['cards', 'כרטיסיות']
 ];
 
 /* ---------- state ---------- */
-var state = { home: true, course: 'mehist', view: 'review', q: '', src: 'all', quiz: false, idx: 0, flipped: false, onlyNew: false, known: {} };
+var state = { home: true, course: 'mehist', view: 'review', q: '', src: 'all', quiz: false, idx: 0, flipped: false, onlyNew: false, known: {}, exam: 'all' };
 try {
   var saved = JSON.parse(localStorage.getItem('known-terms') || '{}');
   if (saved && typeof saved === 'object') state.known = saved;
@@ -2800,6 +2841,8 @@ var GLOSS = {
   'g-oligarch': { w: 'אוליגרכיה', d: 'ביוונית: שלטון של מעטים.' }
 };
 var MARK = /\{\{([^|}]+)\|([^}]+)\}\}/g;
+var QUOTES = /[“”"]/g;
+var PARENS = /\s*\(.*$/;
 var GMARK = /\[\[([^|\]]+)\|([^\]]+)\]\]/g;
 function strip(s) { return s.replace(MARK, '$2').replace(GMARK, '$2'); }
 function rich(s) {
@@ -2847,7 +2890,7 @@ function selectCourse(id) {
   state.home = false;
   try { localStorage.setItem('rn:last', id); } catch (e) {}
   window.scrollTo(0, 0);
-  state.course = id; loadCourse(id); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false;
+  state.course = id; loadCourse(id); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false; state.exam = 'all';
   renderAll();
 }
 function renderHead() {
@@ -3011,6 +3054,123 @@ function viewDictionary() {
     return '<article class="entry" id="term-' + id + '"><div class="e-body"><h3>' + TERMS[id].t + '</h3><p>' + TERMS[id].d + '</p></div><div class="in"><span>מופיע ב:</span>' + where + '</div></article>';
   }).join('') + '</div>';
 }
+function examGroups() {
+  /* lectures group by week, readings by their own source, so one lecture is one unit */
+  var order = [], map = {};
+  TOPICS.forEach(function (t) {
+    var wk = String(t.wk).split(',')[0].trim();
+    var k = (t.src === 'read' ? 'r:' + t.srcLabel : 'w:' + wk);
+    if (!map[k]) { map[k] = { key: k, wk: wk, read: t.src === 'read', items: [] }; order.push(map[k]); }
+    map[k].items.push(t);
+  });
+  return order;
+}
+function labelTitle(lab) {
+  var ss = String(lab).split(' · ');
+  var txt = (/^סיכום/.test(ss[0]) || ss[0] === 'חומרי הקורס') ? ss.slice(1).join(' · ') : ss[0];
+  return txt.replace(QUOTES, '').replace(PARENS, '').trim();
+}
+function groupTitle(g) {
+  var t = labelTitle(g.items[0].srcLabel);
+  if (g.read) return t || g.wk;
+  return (t && t.indexOf(g.wk) === 0 && t.indexOf(' · ') < 0) ? t : g.wk;
+}
+function srcLine(ss) {
+  return (ss.length > 1 ? 'מקורות: ' : 'מקור: ') + ss.join(' · ');
+}
+function groupSources(g) {
+  var out = [], seen = {};
+  g.items.forEach(function (t) { if (!seen[t.srcLabel]) { seen[t.srcLabel] = 1; out.push(t.srcLabel); } });
+  return out;
+}
+function groupShort(g) {
+  var t = groupTitle(g);
+  return t.length > 30 ? t.slice(0, 29) + '…' : t;
+}
+function examTermIds(g) {
+  var ids = [], seen = {};
+  g.items.forEach(function (t) {
+    termsOf(t).forEach(function (id) { if (!seen[id] && TERMS[id]) { seen[id] = 1; ids.push(id); } });
+  });
+  return ids;
+}
+function examPick() {
+  var gs = examGroups();
+  if (state.exam === 'all' || !gs[state.exam]) return gs;
+  return [gs[state.exam]];
+}
+function viewExam() {
+  var gs = examGroups();
+  if (!gs.length) return empty('אין עדיין נושאים', 'ברגע שיתווסף חומר לקורס אפשר יהיה להפיק ממנו מסמך.');
+  var sel = examPick(), all = state.exam === 'all' || !gs[state.exam];
+  var chips = '<div class="tools"><button class="chip" data-exam="all" aria-pressed="' + all + '">כל הקורס</button>' +
+    gs.map(function (g, i) {
+      return '<button class="chip" data-exam="' + i + '" aria-pressed="' + (!all && state.exam === i) + '">' + groupShort(g) + '</button>';
+    }).join('') +
+    '<button class="chip" data-copyexam="1">העתק את המסמך</button></div>';
+
+  var nTop = 0, nTerm = 0;
+  var secs = sel.map(function (g) {
+    var ids = examTermIds(g), qs = [];
+    g.items.forEach(function (t) { qs = qs.concat(t.qs); });
+    nTop += g.items.length; nTerm += ids.length;
+    return '<section class="exam-sec">' +
+      '<h2>' + groupTitle(g) + '</h2>' +
+      '<p class="src">' + srcLine(groupSources(g)) + '</p>' +
+      g.items.map(function (t) {
+        return '<div class="exam-topic"><h3>' + t.title + '</h3>' +
+          '<p class="exam-lead">' + rich(t.tldr) + '</p><ul>' +
+          t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>';
+      }).join('') +
+      (ids.length ? '<div class="exam-block"><h3>מושגים ביחידה</h3><dl>' +
+        ids.map(function (id) { return '<dt>' + TERMS[id].t + '</dt><dd>' + TERMS[id].d + '</dd>'; }).join('') +
+        '</dl></div>' : '') +
+      (qs.length ? '<div class="exam-block"><h3>שאלות לבדיקה עצמית</h3><ol>' +
+        qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' : '') +
+      '</section>';
+  }).join('');
+
+  return chips +
+    '<article class="exam" id="exam-doc">' +
+      '<header class="exam-head"><p class="exam-kicker">הכנה לבוחן</p><h1>' + course().name + '</h1>' +
+      '<p class="exam-meta">' + sel.length + (sel.length === 1 ? ' יחידה' : ' יחידות') +
+      ' · ' + nTop + ' נושאים · ' + nTerm + ' מושגים</p></header>' + secs +
+    '</article>' +
+    '<p class="exam-hint">לשמירה כקובץ: הדפסה מהדפדפן ובחירת "שמירה כ-PDF". המסמך מודפס בלי התפריטים.</p>';
+}
+function examText() {
+  var sel = examPick(), out = ['הכנה לבוחן — ' + course().name, ''];
+  sel.forEach(function (g) {
+    out.push('== ' + groupTitle(g) + ' ==', srcLine(groupSources(g)), '');
+    g.items.forEach(function (t) {
+      out.push('— ' + t.title, strip(t.tldr));
+      t.pts.forEach(function (p) { out.push('• ' + strip(p)); });
+      out.push('');
+    });
+    var ids = examTermIds(g);
+    if (ids.length) {
+      out.push('מושגים ביחידה:');
+      ids.forEach(function (id) { out.push('• ' + TERMS[id].t + ' — ' + TERMS[id].d); });
+      out.push('');
+    }
+    var qs = [];
+    g.items.forEach(function (t) { qs = qs.concat(t.qs); });
+    if (qs.length) {
+      out.push('שאלות לבדיקה עצמית:');
+      qs.forEach(function (q, i) { out.push((i + 1) + '. ' + q); });
+      out.push('');
+    }
+  });
+  return out.join('\n');
+}
+function selectExamDoc() {
+  var el = $('exam-doc');
+  if (!el || !window.getSelection) return;
+  try {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  } catch (e) {}
+}
 function deckIds() {
   var ids = allTermIds();
   return state.onlyNew ? ids.filter(function (id) { return !state.known[kk(id)]; }) : ids;
@@ -3042,7 +3202,7 @@ function renderContent() {
     $('content').innerHTML = empty('הקורס עדיין ריק', 'אחרי שנסכם את החומרים של הקורס, הם יופיעו כאן, מסודרים לפי נושא, עם מילון מושגים משלו.');
     return;
   }
-  var v = { review: viewReview, summaries: viewSummaries, dictionary: viewDictionary, cards: viewCards }[state.view];
+  var v = { review: viewReview, summaries: viewSummaries, exam: viewExam, dictionary: viewDictionary, cards: viewCards }[state.view];
   $('content').innerHTML = v();
 }
 function renderAll() {
@@ -3168,6 +3328,24 @@ document.addEventListener('click', function (e) {
   if (d.course) return selectCourse(d.course);
   if (d.view) return setView(d.view);
   if (d.src) { state.src = d.src; return renderContent(); }
+  if (d.exam) {
+    state.exam = d.exam === 'all' ? 'all' : +d.exam;
+    renderContent();
+    var top = $('content'); if (top) top.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return;
+  }
+  if (d.copyexam) {
+    var btn = el, txt = examText();
+    var back = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = 'העתק את המסמך'; }, 2200);
+    };
+    try {
+      navigator.clipboard.writeText(txt).then(function () { back('הועתק ✓'); },
+        function () { selectExamDoc(); back('סומן — העתק ידנית'); });
+    } catch (e) { selectExamDoc(); back('סומן — העתק ידנית'); }
+    return;
+  }
   if (d.expand) {
     var boxes = [].slice.call(document.querySelectorAll('#content .topic'));
     var toOpen = boxes.some(function (b) { return !b.open; });
