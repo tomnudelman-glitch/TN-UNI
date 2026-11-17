@@ -533,6 +533,10 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .pill::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: hsl(var(--ph) 40% 62%); flex: none; }
 .pill:hover { transform: translate(-1px, -2px); box-shadow: 3px 3px 0 var(--pop-c); }
 .pill.empty-c { border-style: dashed; color: var(--muted); }
+.pill.ext::after, .course.ext small::after { content: "\2197"; font-weight: 700; margin-inline-start: 2px; }
+a.pill, a.course { text-decoration: none; }
+.pill .badge { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; background: var(--surface);
+  border: 1px solid var(--outline); border-radius: 999px; padding: 1px 8px; color: var(--muted); }
 .go { margin-top: 4px; background: hsl(var(--dh) 40% var(--go-l)); color: var(--go-ink); border: 2px solid var(--outline); border-radius: 16px; box-shadow: 4px 4px 0 var(--pop-c); padding: 10px 26px; font-weight: 700; font-size: 18px; transition: transform 0.1s, box-shadow 0.1s; }
 .go:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--pop-c); }
 .go:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--pop-c); }
@@ -699,6 +703,7 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 <li><b>מבוא לממשל ופוליטיקה א’:</b> אמיל דורקהיים, "התאבדות אגואיסטית" (מתוך "התאבדות", עמ’ 87–99) · ברוך זיסר, "השמאל הרדיקלי: החזון של מרקס" (מתוך "על ימין ועל שמאל", עמ’ 170–193).</li>
 <li><b>תולדות המחשבה המדינית א’:</b> אפלטון, "נאום ההגנה של סוקרטס" (אפולוגיה) · אריסטו, "פוליטיקה" (מבחר קטעים מתורגמים).</li>
 <li><b>שיטות מחקר ושימושי מחשב:</b> Yair, Cavari &amp; Efrat, "Conspiracy Thinking and Electoral Trust during Tumultuous Times: The Case of Israel" (IJPOR, 2024) · Stolzenberg ואחרים, "A Descriptive Survey Investigating the Impact of the COVID-19 Pandemic on the Public’s Perception of Healthcare Professionals" (2023).</li>
+<li><b>ערבית (ממלכת רוני):</b> אתר תרגול נפרד שבניתי לעצמי, ובו אוצר מילים, משפטים וכללי דקדוק מתוך חומרי הקורס. הוא מתארח כאן תחת אותה כתובת, והקוד שלו נפרד.</li>
 </ul>
 <p>שאר הנושאים באתר מבוססים על סיכומי השיעור האישיים שלי מההרצאות. בראש כל נושא מופיעה תווית שאומרת על מה הוא מבוסס, ולידה שם המקור.</p>
 
@@ -766,7 +771,9 @@ var COURSES = [
   { id: 'mehist', track: 'mes', name: 'מבוא לתולדות המזרח התיכון בעת החדשה' },
   { id: 'islam', track: 'mes', name: 'מבוא לתולדות האסלאם' },
   { id: 'ott', track: 'mes', name: "מבוא לתולדות האימפריה העות'מנית" },
-  { id: 'orient', track: 'mes', name: 'מבוא למזרחנות' }
+  { id: 'orient', track: 'mes', name: 'מבוא למזרחנות' },
+  { id: 'arabic', track: 'mes', name: 'ערבית · ממלכת רוני', ext: 'arabic/',
+    meta: '120 מילים · 106 משפטים · 21 סיפורים', badge: 'תרגול' }
 ];
 
 var TERMS = {};
@@ -3178,6 +3185,10 @@ function renderCourses() {
   var t = trackOf();
   $('side-title').textContent = 'קורסים · ' + t.name;
   $('courses').innerHTML = COURSES.filter(function (c) { return c.track === t.id; }).map(function (c) {
+    if (c.ext) {
+      return '<a class="course ext" href="' + c.ext + '" target="_blank" rel="noopener" style="--ph:' + HUES[c.id] + '">' +
+        '<b>' + c.name + '</b><small>' + (c.meta || 'אתר תרגול') + '</small></a>';
+    }
     var dd = DATA[c.id]; var meta = dd ? dd.topics.length + ' נושאים · ' + Object.keys(dd.terms).length + ' מושגים' : 'עדיין ריק';
     return '<button class="course" data-course="' + c.id + '" style="--ph:' + HUES[c.id] + '"' + (c.id === state.course ? ' aria-current="true"' : '') + '><b>' + c.name + '</b><small>' + meta + '</small></button>';
   }).join('');
@@ -3241,7 +3252,7 @@ function viewReview() {
   return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
 }
 /* ---------- diagrams (drawn from the summaries themselves) and photo slots ---------- */
-var HUES = { soc: 226, isr: 226, gov: 226, rm: 226, thought: 226, mehist: 176, islam: 176, ott: 176, orient: 176 };
+var HUES = { soc: 226, isr: 226, gov: 226, rm: 226, thought: 226, mehist: 176, islam: 176, ott: 176, orient: 176, arabic: 150 };
 var IMGS = { /* 'course:topic': [{ src, cap, kind: 'portrait' | 'doc' }] */
   'islam:i1': [{ src: 'img/arabiamap.jpg', cap: 'חצי האי ערב ושתי האימפריות השכנות: הביזנטית והפרסית', kind: 'doc' }],
   'islam:i2': [{ src: 'img/tent.jpg', cap: 'אוהל בדואי' }],
@@ -3747,7 +3758,7 @@ function renderHome() {
   $('hero-art').innerHTML = heroArt();
   var tt = 0, tm = 0;
   COURSES.forEach(function (c) { var d = DATA[c.id]; if (d) { tt += d.topics.length; tm += Object.keys(d.terms).length; } });
-  $('hero-stats').innerHTML = '<span>' + COURSES.length + ' קורסים</span><span>' + tt + ' נושאים</span><span>' + tm + ' מושגים</span>';
+  $('hero-stats').innerHTML = '<span>' + COURSES.filter(function (c) { return !c.ext; }).length + ' קורסים</span><span>' + tt + ' נושאים</span><span>' + tm + ' מושגים</span>';
   var last = null; try { last = localStorage.getItem('rn:last'); } catch (e) {}
   var lc = COURSES.filter(function (c) { return c.id === last && DATA[c.id]; })[0];
   var rb = $('resume'); rb.hidden = !lc;
@@ -3755,13 +3766,18 @@ function renderHome() {
   $('doors').innerHTML = TRACKS.map(function (t) {
     var cs = COURSES.filter(function (c) { return c.track === t.id; });
     var nt = 0, nm = 0;
+    var own = cs.filter(function (c) { return !c.ext; });
     cs.forEach(function (c) { var d = DATA[c.id]; if (d) { nt += d.topics.length; nm += Object.keys(d.terms).length; } });
     var pills = cs.map(function (c) {
+      if (c.ext) {
+        return '<a class="pill ext" href="' + c.ext + '" target="_blank" rel="noopener" style="--ph:' + HUES[c.id] + '">' +
+          c.name + (c.badge ? ' <span class="badge">' + c.badge + '</span>' : '') + '</a>';
+      }
       return '<button class="pill' + (DATA[c.id] ? '' : ' empty-c') + '" data-course="' + c.id + '" style="--ph:' + HUES[c.id] + '">' + c.name + (DATA[c.id] ? '' : ' (עוד ריק)') + '</button>';
     }).join('');
     return '<article class="door" style="--dh:' + DOOR_HUE[t.id] + '">' +
       '<div class="door-art"><svg viewBox="0 0 400 176" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">' + art(DOOR_ART[t.id]) + '</svg></div>' +
-      '<div class="door-body"><h2>' + t.name + '</h2><p class="meta">' + cs.length + ' קורסים · ' + nt + ' נושאים · ' + nm + ' מושגים</p>' +
+      '<div class="door-body"><h2>' + t.name + '</h2><p class="meta">' + own.length + ' קורסים · ' + nt + ' נושאים · ' + nm + ' מושגים</p>' +
       '<div class="pills">' + pills + '</div>' +
       '<button class="go" data-track="' + t.id + '">כניסה לחוג ←</button></div></article>';
   }).join('');
