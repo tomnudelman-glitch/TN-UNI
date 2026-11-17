@@ -149,6 +149,14 @@ h1,h2,h3{text-wrap:balance;font-family:var(--disp)}
 .start .sub{font-family:var(--disp);font-size:30px;line-height:1.2;font-weight:700}
 .start .btn{width:auto;padding:0 48px;background:var(--h-teal-o);color:var(--h-teal-i);font-size:19px;margin-top:8px}
 
+
+.legal-box{width:100%;max-width:560px;margin-top:4px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:start;color:var(--muted);font-size:14px;line-height:1.6}
+.legal-box>summary{cursor:pointer;list-style:none;font-weight:700;color:var(--ink);font-size:15px}
+.legal-box>summary::-webkit-details-marker{display:none}
+.legal-box>summary::after{content:" \25be"}
+.legal-box[open]>summary::after{content:" \25b4"}
+.legal-box p{margin:10px 0 0}
+.legal-box b{color:var(--ink)}
 /* home */
 .brand{display:flex;align-items:center;gap:12px}
 .crown{width:54px;height:54px;flex:none;border-radius:27px;background:var(--h-orange);color:var(--h-orange-o);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--edge)}
@@ -592,7 +600,8 @@ function start(){
   setView('<div class="start"><div class="crown-lg">'+ICON.crown+'</div>'+
     '<div class="stack-s" style="align-items:center"><h1>לימודי מזרח תיכון</h1><div class="sub">ממלכת רוני</div></div>'+
     '<div>ערבית ספרותית למתחילים</div>'+
-    '<a class="btn" href="#home">התחל ללמוד</a></div>',true);
+    '<a class="btn" href="#home">התחל ללמוד</a>'+
+    '<details class="legal-box"><summary>על האתר וזכויות יוצרים</summary><p>אתר תרגול אישי ולא רשמי. הוא אינו קשור לאוניברסיטת בר-אילן, אינו מטעמה ואינו מטעם מרצי הקורס, ואין בו שימוש מסחרי.</p><p><b>מה יש כאן:</b> אוצר מילים, ביטויים וכללי דקדוק של הקורס, מנוסחים מחדש, עם מספרי עמודים מחוברת הקורס כדי שאפשר יהיה לחזור למקור. הסיפורים והתרגילים נכתבו במיוחד לאתר הזה ומשתמשים רק במילים שכבר נלמדו.</p><p><b>מה אין כאן:</b> אין סריקות, אין עמודים מצולמים, אין העתק של חוברת הקורס או של כל חומר אחר, ואין חומרים של סטודנטים אחרים.</p><p>ייתכנו טעויות בניקוד, בתרגום ובכללים. אין להסתמך על האתר כתחליף לשיעור או לחוברת הקורס. בעל זכויות שסבור שתוכן כאן פוגע בזכויותיו מוזמן לפנות, והתוכן יוסר מיד.</p></details></div>',true);
 }
 
 var confirmReset=false;
