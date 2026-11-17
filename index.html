@@ -475,6 +475,7 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .tab[data-view="dictionary"]::before { content: "\1F524\00A0"; }
 .tab[data-view="cards"]::before { content: "\1F0CF\00A0"; }
 .tab[data-view="exam"]::before { content: "\1F4DD\00A0"; }
+.tab[data-view="quiz"]::before { content: "\1F3AF\00A0"; }
 .search input { border: 2px solid var(--outline); border-radius: 14px; background: var(--surface); }
 .chip { border: 2px solid var(--outline); background: var(--surface); }
 .chip[aria-pressed="true"] { box-shadow: 2px 2px 0 var(--pop-c); }
@@ -549,6 +550,49 @@ h1, h2, h3, .pop b, .empty b { font-weight: 400; }
 .legal b { color: var(--ink); }
 .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer; }
 #content { scroll-margin-top: 96px; }
+.qz-setup { display: flex; flex-direction: column; gap: 16px; }
+.qz-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 20px 22px; }
+.qz-card > h3 { font-family: var(--font-display); font-size: 18px; margin: 0 0 4px; color: var(--ink); }
+.qz-card > p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; }
+.qz-big { width: 100%; font-family: var(--font-display); font-size: 19px; padding: 14px 18px; border-radius: 14px;
+  border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.qz-big:hover { filter: brightness(1.08); }
+.qz-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.qz-sel { width: 100%; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--tint); color: var(--ink); font: inherit; font-size: 15px; margin-bottom: 10px; }
+.qz-pool { color: var(--muted); font-size: 13.5px; margin: 0; }
+.qz-last { color: var(--accent); font-weight: 700; font-size: 13.5px; }
+.qz-run { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px 24px 24px; }
+.qz-top { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+.qz-top b { color: var(--ink); font-family: var(--font-display); font-size: 16px; }
+.qz-bar { height: 7px; border-radius: 99px; background: var(--tint); overflow: hidden; margin-bottom: 18px; }
+.qz-bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.25s; }
+.qz-q { font-family: var(--font-display); font-size: 20px; line-height: 1.5; color: var(--ink); margin: 0 0 16px; text-wrap: balance; }
+.qz-opts { display: flex; flex-direction: column; gap: 9px; }
+.qz-opt { text-align: start; font: inherit; font-size: 16px; line-height: 1.5; padding: 13px 16px; border-radius: 13px;
+  border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; display: flex; gap: 10px; }
+.qz-opt:hover:not(:disabled) { border-color: var(--accent); background: var(--tint); }
+.qz-opt:disabled { cursor: default; }
+.qz-opt .k { font-weight: 700; color: var(--muted); flex: none; }
+.qz-opt.good { border-color: #2f8f5b; background: color-mix(in srgb, #2f8f5b 14%, var(--bg)); }
+.qz-opt.good .k, .qz-opt.bad .k { color: var(--ink); }
+.qz-opt.bad { border-color: #c2473f; background: color-mix(in srgb, #c2473f 13%, var(--bg)); }
+.qz-why { margin-top: 16px; background: var(--tint); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.qz-why b { display: block; font-family: var(--font-display); margin-bottom: 4px; }
+.qz-why .from { display: block; margin-top: 8px; font-size: 13.5px; color: var(--muted); }
+.qz-act { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.qz-act button { font-family: var(--font-display); font-size: 16px; padding: 11px 20px; border-radius: 12px;
+  border: 1.5px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.qz-act button.ghost { background: var(--surface); color: var(--accent); }
+.qz-score { font-family: var(--font-display); font-size: 46px; color: var(--accent); margin: 0; line-height: 1.1; }
+.qz-wrong { margin-top: 16px; }
+.qz-wrong li { margin-bottom: 12px; }
+.qz-wrong .ok { color: var(--ink); font-weight: 700; }
+@media (max-width: 760px) {
+  .qz-run, .qz-card { padding: 16px; }
+  .qz-q { font-size: 18px; }
+  .qz-opt { font-size: 15px; padding: 11px 13px; }
+}
 .exam { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 26px 30px 30px; }
 .exam-head { border-bottom: 3px solid var(--accent); padding-bottom: 14px; margin-bottom: 8px; }
 .exam-kicker { margin: 0; font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; color: var(--accent); }
@@ -728,9 +772,156 @@ var COURSES = [
 var TERMS = {};
 var TOPICS = [];
 var UNITS = {};
+var QUIZ = [];
 var DATA = {};
 DATA.mehist = {
   note: 'מרצה: ד"ר אלישבע מכליס. הציון: שתי בחינות (40% כל אחת, אחת בכל סמסטר) ושתי מטלות (10% כל אחת). הבחינה בכתיבה ארוכה ולא אמריקאית. בסמסטר א\' יש חלק של מושגים, שבו כותבים פסקה על כל מושג (למשל דאר אל-אסלאם וג\'האד), וחלק של שאלות רוחב. הבחינה נעשית במערכת טו-מקס.',
+  quiz: [
+    { id: 'm1-1', t: 'm1', q: 'מדוע המושג "המזרח התיכון" נקרא דווקא "תיכון"?',
+      a: ['הוא האמצע בדרך בין אנגליה להודו', 'הוא האמצע בין אירופה לאפריקה', 'הוא האמצע בין הים התיכון למפרץ הפרסי', 'הוא האמצע בין האימפריה העות’מאנית לפרס'],
+      c: 0, why: 'המושג נוצר אצל הבריטים בסוף המאה ה-19: "תיכון" הוא האמצע בין אנגליה להודו, ו"מזרח" הוא ביחס לאנגליה. זה מושג זר שלא נבחר בידי תושבי האזור.' },
+    { id: 'm1-2', t: 'm1', q: 'מהו דאר אל-חרב?',
+      a: ['כל מה שמחוץ לדאר אל-אסלאם, ולפי האסלאם הוא ניתן לכיבוש', 'אזור שבו מוסלמים הם מיעוט מוגן', 'שטח שנכבש במסגרת ג’האד הגנתי בלבד', 'מרחב שחל בו איסור על מלחמה'],
+      c: 0, why: 'דאר אל-אסלאם הוא המרחב שתחת שליטה פוליטית-דתית מוסלמית, ודאר אל-חרב הוא כל מה שמחוצה לו.' },
+    { id: 'm1-3', t: 'm1', q: 'מה אפיין את ההתאסלמות בכיבושי האימפריה העות’מאנית?',
+      a: ['כמעט לא הייתה כפייה, אבל היה עידוד משמעותי וההתאסלמות עצמה לא דרשה הרבה', 'התאסלמות בכפייה שיטתית בכל שטח שנכבש', 'איסור גורף על בני דתות אחרות לחיות באימפריה', 'התאסלמות רק בתמורה לפטור מגיוס לצבא'],
+      c: 0, why: 'ההתרחבות נעשתה בעיקר בעידוד ולא בכפייה. לבני דתות אחרות היו קשיים כמו מיסים ואי-שוויון, אך קהילות יהודיות ונוצריות שלמות חיו וברובן אף פרחו.' },
+    { id: 'm2-1', t: 'm2', q: 'מהו הג’האד הגדול (אל-אכבר)?',
+      a: ['המאמץ הפנימי להיות מוסלמי טוב יותר', 'המלחמה להרחבת שטחי האסלאם', 'ההגנה על דאר אל-אסלאם מפני פלישה', 'העלייה לרגל למכה'],
+      c: 0, why: 'ג’האד פירושו מאמץ. הגדול הוא הפנימי (ג’האד אל-נפס), והקטן הוא הצד הלוחמני.' },
+    { id: 'm2-2', t: 'm2', q: 'מהו הערך העליון באסלאם המקורי?',
+      a: ['הג’האד הפנימי', 'כיבוש שטח חדש', 'הגדלת מספר המאמינים', 'הכרזה על ג’האד הגנתי'],
+      c: 0, why: 'באסלאם המקורי הערך העליון הוא האסלאם הפנימי. ההתרחבות והגדלת מספר המאמינים הן מטרה, אך הערך התחתון.' },
+    { id: 'm2-3', t: 'm2', q: 'מה שינו התנועות הג’האדיסטיות המודרניות?',
+      a: ['הפכו את המלחמה לערך החשוב ביותר, והורידו מהפרק את השאלות מי מכריז עליה ומה אופייה', 'ביטלו לגמרי את הג’האד הקטן', 'החזירו את הבכורה לג’האד הפנימי', 'הגבילו את הג’האד למצבי הגנה בלבד'],
+      c: 0, why: 'הן הפכו את היוצרות, ומבססות את עצמן על הבנה מילולית של הטקסטים, בעיקר על סמך החדית’.' },
+    { id: 'm3-1', t: 'm3', q: 'מה פירוש "ערבי" כמושג?',
+      a: ['מוצא אתני הקשור לעם, לתרבות ולשפה, ולא לדת', 'שיוך דתי לאסלאם', 'אזרחות במדינה החברה בליגה הערבית', 'כינוי לכל תושבי המזרח התיכון'],
+      c: 0, why: 'אתני הוא מוצא הקשור לעם, לתרבות ולשפה. במרחב יש ערבים מוסלמים, נוצרים ויהודים, ומוסלמי אינו בהכרח ערבי.' },
+    { id: 'm3-2', t: 'm3', q: 'מה אפיין את התנועה הפאן-ערבית בראשיתה?',
+      a: ['תנועה חילונית שדיברה על זהות ערבית, ונוצרים לקחו בה חלק משמעותי', 'תנועה אסלאמית שקראה לאיחוד תחת ח’ליפות', 'תנועה שקמה במצרים בהובלת אל-אזהר', 'תנועה שדרשה נאמנות למדינה הספציפית ולא לערביות'],
+      c: 0, why: 'התנועה קמה בעיקר בסוריה ובלבנון, היא חילונית ומדברת על זהות ערבית ולא על האסלאם, ושילבה גם אנטי-אימפריאליזם.' },
+    { id: 'm3-3', t: 'm3', q: 'מה ההבדל בין קומיה לוטניה?',
+      a: ['קומיה היא העם הערבי כולו, ווטניה היא מולדת מדינתית ספציפית', 'קומיה היא המולדת המקומית, ווטניה היא האומה הערבית', 'שתיהן מתייחסות לאומה האסלאמית כולה', 'קומיה היא השבט, ווטניה היא המשפחה'],
+      c: 0, why: 'משנות החמישים מדברים יותר על וטניה, ולעיתים יש מאבק בין השתיים.' },
+    { id: 'm4-1', t: 'm4', q: 'מהם שלושת יסודות האמונה (אצול אל-דין) שכל המוסלמים מאמינים בהם?',
+      a: ['תוחיד, נבוה ומעאד', 'תוחיד, אמאמה ועדל', 'שהאדה, צלאת וזכאת', 'קוראן, חדית’ ועיזמא'],
+      c: 0, why: 'תוחיד הוא ייחוד האל והחשוב מכולם, נבוה היא האמונה שמוחמד הוא הנביא האחרון, ומעאד היא תחיית המתים.' },
+    { id: 'm4-2', t: 'm4', q: 'אילו יסודות אמונה מוסיפים השיעים?',
+      a: ['אמאמה ועדל', 'תוחיד ונבוה', 'קיאס ועיזמא', 'תקיה ועאשורא'],
+      c: 0, why: 'השיעים מוסיפים שניים על שלושת היסודות המשותפים: אמאמה (האמונה באמאמים) ועדל (צדק).' },
+    { id: 'm4-3', t: 'm4', q: 'מה המשמעות המעשית של כך שמוחמד הוא "חותם הנביאים"?',
+      a: ['אחריו יכולים לקום מנהיגים פוליטיים, אך לא נביאים נוספים', 'מוחמד ביטל את הנבואות שקדמו לו', 'רק צאצאיו של מוחמד יכולים לשמש נביאים', 'ההתגלות נמשכת, אך רק דרך העלמאא'],
+      c: 0, why: 'על כך אין מחלוקת בין סונים לשיעים. האסלאם מקבל את נביאי היהדות ואת ישו, אך מוחמד הוא האחרון.' },
+    { id: 'm5-1', t: 'm5', q: 'מהי השהאדה?',
+      a: ['העדות, התרגום המעשי של התוחיד, ומקבילה ל"שמע ישראל" ביהדות', 'הצום בחודש רמדאן', 'הצדקה הניתנת לחלש', 'העלייה לרגל למכה'],
+      c: 0, why: 'השהאדה היא הראשון מחמשת היסודות המעשיים (ארכאן אל-אסלאם), והיא פעולת האמירה עצמה.' },
+    { id: 'm5-2', t: 'm5', q: 'מה מייחד את תפילת יום שישי?',
+      a: ['זו התפילה הציבורית היחידה, והיא כוללת דרשה שמחברת דת ופוליטיקה', 'זו תפילת יחיד שנערכת בבית', 'זו אחת מחמש התפילות היומיות הרגילות', 'היא מיוחדת לשיעים בלבד'],
+      c: 0, why: 'חמש התפילות היומיות הן תפילות יחיד. תפילת יום שישי במסגד חשובה לעוצמת ההתקבצות של הקהילה, והדרשן נהג להלל את השליט.' },
+    { id: 'm5-3', t: 'm5', q: 'מה מקומו של החאג’ אצל השיעים?',
+      a: ['חובה בדיוק כמו אצל הסונים, והם עולים נוסף על כך לנג’אף ולכרבלא', 'הם פטורים ממנו', 'הם עולים לנג’אף במקום למכה', 'הוא חובה רק על אנשי דת'],
+      c: 0, why: 'העלייה לרגל היא חובה לפחות פעם בחיי המאמין, על סונים ועל שיעים כאחד.' },
+    { id: 'm6-1', t: 'm6', q: 'מה היחס בין השריעה להלכה?',
+      a: ['השריעה היא "הדרך" הכוללת, וההלכה היא החלק העיקרי בתוכה', 'ההלכה היא המסגרת הרחבה, והשריעה היא חלק ממנה', 'שתיהן שמות נרדפים לאותו דבר', 'השריעה היא פרשנות הקוראן בלבד'],
+      c: 0, why: 'השריעה כוללת בעיקר הלכה, אך גם אמונה, פילוסופיה וכל דבר אחר. ההלכה עצמה דינמית ונגזרת גם בהתאמה למציאות.' },
+    { id: 'm6-2', t: 'm6', q: 'מדוע הקוראן אינו נחשב טקסט הלכתי?',
+      a: ['הוא סובב סביב רעיונות ואמונה, ואי אפשר ללמוד ממנו איך מתפללים', 'הוא נכתב מאוחר מדי מכדי לשמש להלכה', 'הוא כולל את כל ההלכות, אך בסדר אקראי', 'הוא מחייב את השיעים בלבד'],
+      c: 0, why: 'הקוראן הוא הטקסט הקדוש ביותר ונחשב דברי האל, והוא משמש יחד עם כלים נוספים לגזירת הלכות.' },
+    { id: 'm6-3', t: 'm6', q: 'מהו המבנה של הקוראן?',
+      a: ['114 פרקים הנקראים סורות, והפסוקים נקראים איות', '114 פסוקים הנקראים איות, והפרקים נקראים סורות', '99 סורות, על שם תארי האל', '40 סורות, שכולן התגלו במדינה'],
+      c: 0, why: 'חלק מהסורות התגלו במכה וחלק במדינה. סורת אל-פתיחה פותחת את הקוראן ומבססת את האמונה באלוהות.' },
+    { id: 'm7-1', t: 'm7', q: 'ממה בנוי כל חדית’?',
+      a: ['מתן (הטקסט) ואסנאד (שרשרת המוסרים)', 'סורה ואיה', 'תפסיר ועלם', 'עיזמא וקיאס'],
+      c: 0, why: 'שרשרת המוסרים נובעת מכך שהדיווח התעכב, וההעברה עלולה לשבש אותו, כמו ב"טלפון שבור".' },
+    { id: 'm7-2', t: 'm7', q: 'מי הם הצחאבה?',
+      a: ['חברי הנביא שחיו בתקופתו וראו את מעשיו, והם המוסרים הראשונים', 'ארבעת הח’ליפים הראשונים בלבד', 'אספני החדית’ במאה ה-9', 'מפרשי הקוראן באל-אזהר'],
+      c: 0, why: 'השיעים טוענים שהצחאבה, מוסרי החדית’ הסוני, לא היו מאמינים, ולכן יש להם חדית’ משלהם.' },
+    { id: 'm7-3', t: 'm7', q: 'מה מציין הסולם "סחית’ מול דעיף"?',
+      a: ['את מידת הנאמנות של החדית’', 'שתי אסכולות הלכה סוניות', 'שני סוגים של ג’האד', 'שני חלקיה של השריעה'],
+      c: 0, why: 'הנאמנות נבדקת בשתי רמות: התוכן, כלומר האם יש תכנים דומים במקורות אחרים, והמוסר, כלומר האם הוא מוכר ונחשב נאמן.' },
+    { id: 'm8-1', t: 'm8', q: 'מהו סדר כלי ההלכה הסוניים?',
+      a: ['קוראן, חדית’, עיזמא, קיאס', 'קוראן, עיזמא, קיאס, חדית’', 'חדית’, קוראן, קיאס, עיזמא', 'קוראן, קיאס, עידאת, חדית’'],
+      c: 0, why: 'יש גם כלים נוספים, כמו עידאת, שהיא הנורמה המקומית.' },
+    { id: 'm8-2', t: 'm8', q: 'מהי עיזמא?',
+      a: ['הסכמה: אדם אינו גוזר הלכה לבד, ונדרשת הסכמה של אסכולה או של קבוצת אנשי דת', 'היקש מתקדים קיים למקרה חדש', 'הנורמה המקומית הנהוגה במקום מסוים', 'פרשנות רציונלית של איש דת יחיד'],
+      c: 0, why: 'הסונים מאמינים מאוד ברעיון הקבוצה והאחדות. ההיקש הוא קיאס, והפרשנות הרציונלית של יחיד שכיחה דווקא בשיעה.' },
+    { id: 'm8-3', t: 'm8', q: 'מדוע הסונים יוצאים נגד הפורשים?',
+      a: ['משום שהם פוגעים באחדות, ובעיניהם השיעים יצאו מן העיזמא', 'משום שהם אינם מקבלים את הקוראן', 'משום שהם אינם מקיימים את חמשת היסודות המעשיים', 'משום שהם מסרבים לעלות לרגל למכה'],
+      c: 0, why: 'האומה האסלאמית הגדולה אמורה לכלול את כולם, בלי קשר לאתניות, אך בפועל היא מפוצלת.' },
+    { id: 'm9-1', t: 'm9', q: 'מיהו חאפצ?',
+      a: ['מי ששינן ושומר את הקוראן בעל פה', 'מורה לתפסיר', 'שופט שרעי', 'המנצח בתחרות השינון'],
+      c: 0, why: 'השינון הוא גם זמן של התעלות ולא רק זיכרון, והחאפצ משמר את המקום האלוהי של הקוראן.' },
+    { id: 'm9-2', t: 'm9', q: 'מהו אל-אזהר?',
+      a: ['מרכז דתי ורוחני של העולם הסוני, שאת ראשיו ממנה השלטון', 'מרכז הלימוד השיעי בעיר קום', 'בית הדין הדתי העליון של סעודיה', 'אוסף החדית’ים שקיבץ בוחרי'],
+      c: 0, why: 'מכיוון שהשלטון ממנה את ראשיו, המוסד כיבד את השלטון. בשנות ה-80 וה-90 היה צורך לתת אלטרנטיבה לאחים המוסלמים באמצעות תכנים מתונים יותר.' },
+    { id: 'm9-3', t: 'm9', q: 'מהי וסטיה, והמטרה לקדם אותה בתחרות?',
+      a: ['דרך האמצע', 'השינון בעל פה', 'המנגינה שבה קוראים את הקוראן', 'הפרשנות המילולית של הטקסט'],
+      c: 0, why: 'מצרים מנסה להראות שהיא מובילה את האסלאם, אך אסלאם מתון, ולכן התחרות מקדמת את דרך האמצע.' },
+    { id: 'm10-1', t: 'm10', q: 'מהן שתי תפיסות הידע שהסרט מציג?',
+      a: ['ידיעת הטקסט והבנה מילולית בלבד, מול שינון יחד עם הבנה ופירוש', 'ידיעת הקוראן מול ידיעת החדית’', 'ידע דתי מול ידע מדעי', 'ידע של העלמאא מול ידע של ההמון'],
+      c: 0, why: 'שינון מילולי בלי פרשנות עלול להוביל לקיצוניות. במצרים אומרים שרק תנועות קיצוניות מנתקות את שינון המילים מהפרשנות.' },
+    { id: 'm10-2', t: 'm10', q: 'מהו אג’תהאד?',
+      a: ['המאמץ לפרש טקסטים ברציונליות', 'שינון הקוראן בעל פה', 'ההסכמה של קבוצת אנשי דת', 'הדרשה בתפילת יום שישי'],
+      c: 0, why: 'פוסק בכיר בשיעה נקרא מוג’תהאד. בשיעה יש יותר מקום לרציונליות (עקל) מאשר אצל הסונים.' },
+    { id: 'm10-3', t: 'm10', q: 'מה ההבדל בין סונה לשיעה בשאלת אסכולות ההלכה?',
+      a: ['בסונה התקבעו ארבע אסכולות במאה ה-10 והאדם הולך לפי אסכולה, ובשיעה לא התקבעו ויש מקום לאיש דת יחיד לפרש', 'בשיעה התקבעו ארבע אסכולות ובסונה לא', 'בשתיהן התקבעו ארבע אסכולות זהות', 'בשתיהן אין אסכולות כלל, והפרשנות חופשית'],
+      c: 0, why: 'זו אחת הסיבות למקום הגדול של אנשי הדת ולרציונליות בשיעה.' },
+    { id: 'm11-1', t: 'm11', q: 'מהי החלוקה המשוערת בין סונים לשיעים בעולם המוסלמי?',
+      a: ['כ-85% סונים וכ-15% שיעים', 'כ-70% סונים וכ-30% שיעים', 'כ-60% סונים וכ-40% שיעים', 'כ-95% סונים וכ-5% שיעים'],
+      c: 0, why: 'השיעים הם המיעוט הפורש. הם הולכים אחרי עלי, חתנו ובן דודו של מוחמד, ומדגישים קשרי דם ואת אהל אל-בית.' },
+    { id: 'm11-2', t: 'm11', q: 'מתי איראן הפכה לשיעית?',
+      a: ['רק במאה ה-16; קודם לכן הייתה סונית, ובעיקר מהזרם הסופי המיסטי', 'כבר בראשית האסלאם, בימי עלי', 'רק עם המהפכה האסלאמית ב-1979', 'היא מעולם לא הייתה מרכז שיעי משמעותי'],
+      c: 0, why: 'היום כ-90% מתושבי איראן שיעים, וקום היא מרכז לימוד שבו מכשירים אנשי דת.' },
+    { id: 'm11-3', t: 'm11', q: 'מדוע עיראק חשובה לשיעים היסטורית יותר מאיראן?',
+      a: ['הסיפור השיעי מתחיל בה, ובה נמצאות ערי הקודש נג’אף וכרבלא', 'מפני שרוב השיעים בעולם חיים בה', 'מפני שהיא המרכז הסוני המרכזי ויש בה מאבק', 'מפני שהמהפכה האסלאמית פרצה בה'],
+      c: 0, why: 'כדי להיות פוסק בכיר בשיעה היה צריך ללכת לערי הקודש האלה, ועל כך יש קונפליקט עם איראן שנמשך עד היום.' },
+    { id: 'm12-1', t: 'm12', q: 'מה מייחד את בחריין?',
+      a: ['נסיכות סונית עם רוב שיעי של כ-70%', 'נסיכות שיעית עם מיעוט סוני קטן', 'המדינה היחידה באזור שאין בה שיעים', 'מדינה שבה השיעים והסונים חולקים את השלטון שווה בשווה'],
+      c: 0, why: 'בדרך כלל המיעוט נתפס כחלק מהמדינה, ובחריין היא היוצאת מן הכלל: המשפחה השלטת היא אל-ח’ליפה הסונית.' },
+    { id: 'm12-2', t: 'm12', q: 'מהו מצב המיעוט השיעי בסעודיה?',
+      a: ['המיעוט הנרדף ביותר: אסור להחזיק מסגדים שיעיים ולהביע דעות שיעיות בפומבי', 'מיעוט מוגן עם ייצוג פוליטי קבוע', 'רוב באזורי הנפט, ולכן בעל כוח כלכלי', 'מיעוט שאינו מוכר רשמית אך חופשי לפעול'],
+      c: 0, why: 'הרדיפה נובעת מתפיסת הוואהאבים, הרואים בשיעים כופרים. אין מספרים מוסכמים על גודלו, בין 5% ל-10%.' },
+    { id: 'm12-3', t: 'm12', q: 'כיצד מחולקים התפקידים הבכירים במשטר הלבנוני?',
+      a: ['נשיא המדינה נוצרי מרוני, ראש הממשלה סוני, ויושב ראש הפרלמנט שיעי', 'נשיא סוני, ראש ממשלה מרוני, ויושב ראש פרלמנט שיעי', 'נשיא שיעי, ראש ממשלה מרוני, ויושב ראש פרלמנט סוני', 'שלושת התפקידים מתחלפים בין העדות בכל מחזור בחירות'],
+      c: 0, why: 'חזבאללה טוען לייצוג ביחס לאוכלוסייה ורוצה להחזיק ביותר כוח, בין היתר משום שאין ספירה מדויקת מזה שנים.' },
+    { id: 'm13-1', t: 'm13', q: 'מהם תנאי המטלה בקורס?',
+      a: ['עמוד אחד שנכתב בכיתה, עם עותק נקי של המאמר, בלי מחשבים ובלי טלפונים', 'עבודת בית בהיקף חופשי שמוגשת בסוף הסמסטר', 'מצגת קבוצתית על מאמר מאתר הקורס', 'בחינה אמריקאית קצרה על מאמר שנקרא מראש'],
+      c: 0, why: 'בוחרים מאמר מאתר הקורס וקוראים אותו בבית, וביום המטלה כותבים בכיתה מיקוד, עיקרים וביקורת.' },
+    { id: 'm13-2', t: 'm13', q: 'כיצד צריכה להיראות הכתיבה במטלה?',
+      a: ['פסקה אחידה וזורמת, בלי קו תחתון, בלי הדגשות ובלי משפטי מחץ מבודדים', 'כתיבה עם כותרות משנה והדגשות לכל רעיון מרכזי', 'כתיבה המשלבת ציטוטים ישירים רבים מהמאמר', 'כתיבה בגוף ראשון שמביעה עמדה לאורך כל העבודה'],
+      c: 0, why: 'מכיוון שהמטלה היא על מאמר שכבר כתוב, כלומר חומר מעובד, מסכמים במילים שלנו ולא מצטטים.' },
+    { id: 'm13-3', t: 'm13', q: 'היכן במטלה יש מקום לדעה אישית?',
+      a: ['רק בחלק הביקורת', 'בכל חלקי המטלה', 'בשום מקום במטלה', 'רק במיקוד המאמר'],
+      c: 0, why: 'שאר הכתיבה נטרלית, מבוססת עובדות ובלי כינויים. הביקורת יכולה לעסוק בשאלה אם המאמר כיסה את הנושא, אם הוא ברור ועקבי, ומה הוא הוסיף.' },
+    { id: 'm14-1', t: 'm14', q: 'באיזה תהליך נבחר אבו בכר לח’ליף הראשון?',
+      a: ['שורא, כלומר קונסנזוס, ואישור באעיה', 'נאץ’, כלומר ייעוד אלוהי דרך הנביא', 'עיזמא וקיאס', 'ירושה ישירה מכוח קרבת דם'],
+      c: 0, why: 'לפי הסונים בחירת המנהיג היא בחירה אנושית פוליטית, לפי כישורים, עוצמה וכריזמה: "מי שיש בכוחו לשלוט".' },
+    { id: 'm14-2', t: 'm14', q: 'מהם שני הקריטריונים השיעיים לסמכות הנהגתית?',
+      a: ['אהל אל-בית, כלומר קשר דם, ונאץ’, כלומר ייעוד אלוהי', 'שורא ובאעיה', 'כישורים וכריזמה', 'עיסמה ועדל'],
+      c: 0, why: 'לפי השיעים תפקיד ההנהגה גדול מדי מכדי להיות תלוי בבחירה אנושית, ולכן הבחירה צריכה להיות של האל דרך הנביא.' },
+    { id: 'm14-3', t: 'm14', q: 'מה פירוש "ירושת הנביא" במחלוקת הזאת?',
+      a: ['הובלת הקהילה מבחינת הנהגה ופוליטיקה, ולא נביא נוסף', 'מינוי נביא חדש שימשיך את ההתגלות', 'חלוקת רכושו האישי של הנביא', 'קביעת נוסח הקוראן הסופי'],
+      c: 0, why: 'הנביא הוא חותם הנביאים, ולכן הוויכוח הוא על הקריטריונים לבחירת מנהיג ועל מקור הסמכות.' },
+    { id: 'm15-1', t: 'm15', q: 'מה השתנה בתפיסה השיעית אחרי כישלון מרד חוסיין בכרבלא?',
+      a: ['מעבר מאקטיביזם לתפיסה פסיבית, מתוך הבנה שהם מיעוט שאינו יכול למרוד בכוח', 'התחזקות הדרישה למרוד ולעלות לשלטון בכוח', 'התאחדות מלאה עם הסונים תחת השושלת האומיית', 'ויתור על הטענה שהשלטון שייך לבית עלי'],
+      c: 0, why: 'עד כרבלא השיעה הייתה אקטיביסטית וראתה כל שלטון שאינו ממשפחת עלי כבלתי לגיטימי. הקרב מונצח מדי שנה בעאשורא.' },
+    { id: 'm15-2', t: 'm15', q: 'מהי ההיעלמות (רעיבה)?',
+      a: ['ב-874 נעלם האמאם ה-12, שלא מת אלא נמצא בשמיים, והוא יחזור כאל-מהדי', 'תקופה שבה הוסתרה זהות האמאמים מפני הסונים', 'ההיעלמות של חוסיין מן הקרב בכרבלא', 'נוהג שיעי להסתיר את השיוך העדתי בפומבי'],
+      c: 0, why: 'בתחילה היה קשר דרך שליחים ועם הזמן נעלם לגמרי. אנחנו עדיין בתקופת ההעלמות, וסימני החזרה כוללים כאוס ומלחמת גוג ומגוג.' },
+    { id: 'm15-3', t: 'm15', q: 'מי מילא את החלל שנוצר בהיעדר האמאם?',
+      a: ['אנשי הדת, שנתפסים כממלאי מקומם של האמאמים', 'הח’ליפים הסונים', 'השושלת העבאסית בבגדאד', 'ארבע אסכולות ההלכה'],
+      c: 0, why: 'מכיוון שהאמאם ה-12 נעלם ולא מת, אי אפשר להביא אמאם חדש. זו הסיבה לחשיבותם הגדולה של אנשי הדת בשיעה עד היום.' },
+    { id: 'm16-1', t: 'm16', q: 'כיצד יתייחס סוני קיצוני לאמונה באמאמים?',
+      a: ['יראה בה לא רק חטא אלא כפירה', 'יראה בה פרשנות לגיטימית של אצול אל-דין', 'יראה בה עניין של מנהג מקומי', 'יראה בה חובה שגם הסונים מקיימים'],
+      c: 0, why: 'סוני יטען שהאמונה באמאמים פוגעת במקום האלוהות ובמקום הנביא. שיעי, לעומת זאת, יאמר שהוא מאמין ביסודות המקוריים ורק מוסיף עליהם שניים.' },
+    { id: 'm16-2', t: 'm16', q: 'מהי תקיה ולשם מה שימשה?',
+      a: ['הסתרת השיוך השיעי והידמות לסוני, כדי לשמור על ביטחונו של המיעוט', 'מס מיוחד שגבו הסונים מן השיעים', 'טקס האבל השנתי על חוסיין', 'איסור על לימוד משותף של שיעים וסונים'],
+      c: 0, why: 'בגלל ההידמות לסונים השיעים מצאו את עצמם לומדים גם עם סונים, ולכן ההבדלים ההלכתיים ביניהם מעטים.' },
+    { id: 'm16-3', t: 'm16', q: 'כיצד נבדלים הנרטיבים ההיסטוריים של סונים ושיעים?',
+      a: ['השיעים רואים היסטוריה של עוול וסבל שתיפתר רק עם חזרת המהדי, והסונים רואים עוצמה ותור זהב', 'השיעים רואים תור זהב והסונים רואים עוול וסבל', 'שני הצדדים רואים את ההיסטוריה כתור זהב שהסתיים', 'שני הצדדים רואים את ההיסטוריה כרצף של עוול'],
+      c: 0, why: 'הפער הזה מתקשר גם להבדלי הסמכות: אצל השיעים האמאמים הם המנהיגים הלגיטימיים היחידים, וכל שלטון אחר הוא שלטון עוול.' }
+  ],
   units: { '15.10': 'המזרח התיכון ויסודות האסלאם', '22.10': 'עמודי האסלאם וההלכה הסונית', '29.10': 'ידע, רציונליות ואג’תהאד', '05.11': 'שורשי המחלוקת הסונית-שיעית', '12.11': 'הסכסוך הסוני-שיעי' },
   terms: {
     'dar-islam': { t: 'דאר אל-אסלאם (מרחב האסלאם)', d: 'אזור גאוגרפי, ללא גבולות מוגדרים, שנמצא תחת שליטה פוליטית-דתית מוסלמית. ההגדרה באה מחכמי המשפט המוסלמי, והיא נשארת פתוחה כי המטרה היא להתרחב.' },
@@ -2759,18 +2950,19 @@ DATA.ott = {
   ]
 };
 
-function loadCourse(id) { var d = DATA[id]; TERMS = d ? d.terms : {}; TOPICS = d ? d.topics : []; UNITS = (d && d.units) || {}; }
+function loadCourse(id) { var d = DATA[id]; TERMS = d ? d.terms : {}; TOPICS = d ? d.topics : []; UNITS = (d && d.units) || {}; QUIZ = (d && d.quiz) || []; }
 
 var VIEWS = [
   ['review', 'חזרה מהירה'],
   ['summaries', 'סיכומים'],
   ['exam', 'הכנה לבוחן'],
+  ['quiz', 'בוחן אמריקאי'],
   ['dictionary', 'מילון מושגים'],
   ['cards', 'כרטיסיות']
 ];
 
 /* ---------- state ---------- */
-var state = { home: true, course: 'mehist', view: 'review', q: '', src: 'all', quiz: false, idx: 0, flipped: false, onlyNew: false, known: {}, exam: 'all' };
+var state = { home: true, course: 'mehist', view: 'review', q: '', src: 'all', quiz: false, idx: 0, flipped: false, onlyNew: false, known: {}, exam: 'all', qz: null };
 try {
   var saved = JSON.parse(localStorage.getItem('known-terms') || '{}');
   if (saved && typeof saved === 'object') state.known = saved;
@@ -2898,7 +3090,7 @@ function selectCourse(id) {
   state.home = false;
   try { localStorage.setItem('rn:last', id); } catch (e) {}
   window.scrollTo(0, 0);
-  state.course = id; loadCourse(id); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false; state.exam = 'all';
+  state.course = id; loadCourse(id); state.q = ''; $('q').value = ''; state.src = 'all'; state.idx = 0; state.flipped = false; state.exam = 'all'; state.qz = null;
   renderAll();
 }
 function renderHead() {
@@ -3062,12 +3254,15 @@ function viewDictionary() {
     return '<article class="entry" id="term-' + id + '"><div class="e-body"><h3>' + TERMS[id].t + '</h3><p>' + TERMS[id].d + '</p></div><div class="in"><span>מופיע ב:</span>' + where + '</div></article>';
   }).join('') + '</div>';
 }
+function unitKeyOf(t) {
+  return t.src === 'read' ? 'r:' + t.srcLabel : 'w:' + String(t.wk).split(',')[0].trim();
+}
 function examGroups() {
   /* lectures group by week, readings by their own source, so one lecture is one unit */
   var order = [], map = {};
   TOPICS.forEach(function (t) {
     var wk = String(t.wk).split(',')[0].trim();
-    var k = (t.src === 'read' ? 'r:' + t.srcLabel : 'w:' + wk);
+    var k = unitKeyOf(t);
     if (!map[k]) { map[k] = { key: k, wk: wk, read: t.src === 'read', items: [] }; order.push(map[k]); }
     map[k].items.push(t);
   });
@@ -3180,6 +3375,193 @@ function selectExamDoc() {
     var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
   } catch (e) {}
 }
+/* ---------- quiz -------------------------------------------------------- */
+function topicSem(t) { return (t && t.sem) || 'א'; }
+function topicById(id) {
+  for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return TOPICS[i];
+  return null;
+}
+function shortTerm(s) { return String(s).replace(/\s*\(.*$/, '').trim(); }
+var MASK_SKIP = ['של', 'את', 'לפי', 'בין', 'כל', 'הוא', 'היא', 'אין', 'יש', 'גם', 'כמו', 'אבל', 'על'];
+function maskTerm(def, name) {
+  var base = shortTerm(name), out = def;
+  var toks = base.split(/[\s־\-"'’,.()]+/).filter(function (w) {
+    return w.length >= 3 && MASK_SKIP.indexOf(w) < 0;
+  });
+  toks.push(base);
+  toks.forEach(function (w) {
+    if (w.length < 3) return;
+    try { out = out.replace(new RegExp('[והבלמשכ]?' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '־־־'); }
+    catch (e) {}
+  });
+  return out;
+}
+function autoQuestions() {
+  var first = {}, order = [];
+  TOPICS.forEach(function (t) {
+    termsOf(t).forEach(function (id) { if (!first[id] && TERMS[id]) { first[id] = t.id; order.push(id); } });
+  });
+  if (order.length < 4) return [];
+  var out = [];
+  order.forEach(function (id, i) {
+    var x = TERMS[id], pool = order.filter(function (o) { return o !== id; }), picks = [], seed = i * 13 + 7;
+    while (picks.length < 3 && pool.length) {
+      seed = (seed * 31 + 17) % 9973;
+      picks.push(pool.splice(seed % pool.length, 1)[0]);
+    }
+    if (picks.length < 3) return;
+    out.push({
+      id: 'a-' + id, t: first[id],
+      q: 'לאיזה מושג מתאימה ההגדרה הזו? ' + maskTerm(x.d, x.t),
+      a: [shortTerm(x.t)].concat(picks.map(function (o) { return shortTerm(TERMS[o].t); })),
+      c: 0, why: x.t + ' — ' + x.d
+    });
+  });
+  return out;
+}
+function quizPool() {
+  return QUIZ.concat(autoQuestions()).filter(function (q) { return topicById(q.t); });
+}
+function semsInCourse() {
+  var seen = {}, out = [];
+  TOPICS.forEach(function (t) { var s = topicSem(t); if (!seen[s]) { seen[s] = 1; out.push(s); } });
+  return out;
+}
+function scopeLabel(sc) {
+  if (sc.kind === 'course') return 'כל הקורס';
+  if (sc.kind === 'unit') {
+    var g = examGroups().filter(function (x) { return x.key === sc.id; })[0];
+    return g ? groupTitle(g) : 'יחידה';
+  }
+  var t = topicById(sc.id);
+  return t ? t.title : 'נושא';
+}
+function inScope(q, sc) {
+  var t = topicById(q.t);
+  if (!t) return false;
+  if (sc.sem && topicSem(t) !== sc.sem) return false;
+  if (sc.kind === 'course') return true;
+  if (sc.kind === 'unit') return unitKeyOf(t) === sc.id;
+  return t.id === sc.id;
+}
+function shuffled(a) {
+  a = a.slice();
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function qzStore(key, val) {
+  try {
+    if (val === undefined) { var r = localStorage.getItem(key); return r ? JSON.parse(r) : null; }
+    localStorage.setItem(key, JSON.stringify(val));
+  } catch (e) {}
+  return null;
+}
+function seenKey() { return 'rn:qzseen:' + state.course; }
+function scoreKey() { return 'rn:qzscore:' + state.course; }
+function startQuiz(sc, only) {
+  var pool = quizPool().filter(function (q) { return inScope(q, sc); });
+  if (only && only.length) pool = pool.filter(function (q) { return only.indexOf(q.id) >= 0; });
+  var want = Math.min(sc.n, pool.length);
+  var seen = (!only && qzStore(seenKey())) || [];
+  var fresh = pool.filter(function (q) { return seen.indexOf(q.id) < 0; });
+  if (fresh.length < want) { seen = []; fresh = pool; }
+  var picked = shuffled(fresh).slice(0, want);
+  if (!only) qzStore(seenKey(), seen.concat(picked.map(function (q) { return q.id; })).slice(-400));
+  state.qz = {
+    scope: sc, done: false, idx: 0,
+    items: picked.map(function (q) {
+      var ord = shuffled(q.a.map(function (_, i) { return i; }));
+      return { q: q, ord: ord, pick: -1 };
+    })
+  };
+  renderContent();
+  var c = $('content'); if (c) c.scrollIntoView({ block: 'start' });
+}
+function viewQuiz() {
+  var pool = quizPool();
+  if (pool.length < 4) return empty('אין עדיין מאגר שאלות', 'ברגע שיתווסף חומר לקורס אפשר יהיה להיבחן עליו.');
+  if (!state.qz) return quizSetup(pool);
+  return state.qz.done ? quizResult() : quizRun();
+}
+function quizSetup(pool) {
+  var sems = semsInCourse(), sem = sems.length === 1 ? sems[0] : null;
+  var gs = examGroups(), scores = qzStore(scoreKey()) || {};
+  function last(k) {
+    var s = scores[k];
+    return s ? ' <span class="qz-last">אחרון: ' + s.s + '/' + s.n + '</span>' : '';
+  }
+  var units = gs.map(function (g) {
+    var n = pool.filter(function (q) { var t = topicById(q.t); return t && unitKeyOf(t) === g.key; }).length;
+    if (n < 4) return '';
+    return '<button class="chip" data-qzk="unit" data-qzi="' + g.key.replace(/"/g, '&quot;') + '">' + groupShort(g) + '</button>';
+  }).join('');
+  var opts = TOPICS.map(function (t) {
+    var n = pool.filter(function (q) { return q.t === t.id; }).length;
+    return n >= 4 ? '<option value="' + t.id + '">' + t.title + ' (' + n + ' שאלות)</option>' : '';
+  }).join('');
+  return '<div class="qz-setup">' +
+    '<div class="qz-card"><h3>מבחן קורס</h3>' +
+      '<p>20 שאלות אמריקאיות מכל החומר שבקורס.' + last('course') + '</p>' +
+      '<button class="qz-big" data-qzk="course">התחל מבחן · 20 שאלות</button>' +
+      '<p class="qz-pool" style="margin-top:10px">מאגר: ' + pool.length + ' שאלות' +
+      (sem ? ' · סמסטר ' + sem + '׳' : ' · ' + sems.length + ' סמסטרים') + '. בכל בוחן נשלפות שאלות אחרות.</p></div>' +
+    (units ? '<div class="qz-card"><h3>בוחן קצר לפי יחידה</h3><p>5 שאלות על הרצאה או על חומר קריאה אחד.</p>' +
+      '<div class="qz-grid">' + units + '</div></div>' : '') +
+    (opts ? '<div class="qz-card"><h3>בוחן קצר לפי נושא</h3><p>5 שאלות על תת-נושא אחד.</p>' +
+      '<select class="qz-sel" id="qz-topic">' + opts + '</select>' +
+      '<button class="chip" data-qzk="topic">התחל · 5 שאלות</button></div>' : '') +
+    '</div>';
+}
+function quizRun() {
+  var z = state.qz, it = z.items[z.idx], q = it.q, n = z.items.length;
+  var answered = it.pick >= 0;
+  var letters = ['א', 'ב', 'ג', 'ד', 'ה'];
+  var opts = it.ord.map(function (orig, pos) {
+    var cls = 'qz-opt';
+    if (answered) {
+      if (orig === q.c) cls += ' good';
+      else if (pos === it.pick) cls += ' bad';
+    }
+    return '<button class="' + cls + '" data-opt="' + pos + '"' + (answered ? ' disabled' : '') + '>' +
+      '<span class="k">' + letters[pos] + '.</span><span>' + q.a[orig] + '</span></button>';
+  }).join('');
+  var right = answered && it.ord[it.pick] === q.c;
+  var src = topicById(q.t);
+  return '<div class="qz-run">' +
+    '<div class="qz-top"><b>' + scopeLabel(z.scope) + '</b><span>שאלה ' + (z.idx + 1) + ' מתוך ' + n + '</span>' +
+      '<button class="linkish" data-qzquit="1" style="margin-inline-start:auto">יציאה</button></div>' +
+    '<div class="qz-bar"><i style="width:' + Math.round((z.idx + (answered ? 1 : 0)) / n * 100) + '%"></i></div>' +
+    '<p class="qz-q">' + q.q + '</p>' +
+    '<div class="qz-opts">' + opts + '</div>' +
+    (answered ? '<div class="qz-why"><b>' + (right ? 'נכון' : 'לא נכון') + '</b>' + q.why +
+      (src ? '<span class="from">מתוך: ' + src.title + '</span>' : '') + '</div>' +
+      '<div class="qz-act"><button data-qznext="1">' + (z.idx + 1 < n ? 'לשאלה הבאה' : 'לסיכום') + '</button>' +
+      '<button class="ghost" data-qzquit="1">יציאה</button></div>' : '') +
+    '</div>';
+}
+function quizResult() {
+  var z = state.qz, n = z.items.length;
+  var wrong = z.items.filter(function (it) { return it.ord[it.pick] !== it.q.c; });
+  var s = n - wrong.length, pct = Math.round(s / n * 100);
+  var scores = qzStore(scoreKey()) || {};
+  scores[z.scope.kind === 'course' ? 'course' : z.scope.kind + ':' + z.scope.id] = { s: s, n: n };
+  qzStore(scoreKey(), scores);
+  var msg = pct >= 90 ? 'שליטה מצוינת בחומר.' : pct >= 70 ? 'בסיס טוב, שווה לחזור על מה שנפל.' :
+            pct >= 50 ? 'חצי מהחומר יושב. כדאי סיבוב נוסף.' : 'כדאי לעבור שוב על היחידה לפני בוחן נוסף.';
+  var list = wrong.map(function (it) {
+    var t = topicById(it.q.t);
+    return '<li>' + it.q.q + '<br><span class="ok">התשובה הנכונה: ' + it.q.a[it.q.c] + '</span>' +
+      (t ? '<br><span class="qz-pool">מתוך: ' + t.title + '</span>' : '') + '</li>';
+  }).join('');
+  return '<div class="qz-run">' +
+    '<div class="qz-top"><b>' + scopeLabel(z.scope) + '</b><span>סיכום הבוחן</span></div>' +
+    '<p class="qz-score">' + s + '/' + n + '</p><p class="qz-pool">' + pct + '% · ' + msg + '</p>' +
+    (wrong.length ? '<div class="qz-wrong"><b>מה שנפל:</b><ol>' + list + '</ol></div>' : '') +
+    '<div class="qz-act">' +
+      (wrong.length ? '<button data-qzretry="1">תרגל רק את הטעויות</button>' : '') +
+      '<button class="ghost" data-qzagain="1">בוחן נוסף על אותו חומר</button>' +
+      '<button class="ghost" data-qzquit="1">בחירת בוחן</button></div></div>';
+}
 function deckIds() {
   var ids = allTermIds();
   return state.onlyNew ? ids.filter(function (id) { return !state.known[kk(id)]; }) : ids;
@@ -3211,7 +3593,7 @@ function renderContent() {
     $('content').innerHTML = empty('הקורס עדיין ריק', 'אחרי שנסכם את החומרים של הקורס, הם יופיעו כאן, מסודרים לפי נושא, עם מילון מושגים משלו.');
     return;
   }
-  var v = { review: viewReview, summaries: viewSummaries, exam: viewExam, dictionary: viewDictionary, cards: viewCards }[state.view];
+  var v = { review: viewReview, summaries: viewSummaries, exam: viewExam, quiz: viewQuiz, dictionary: viewDictionary, cards: viewCards }[state.view];
   $('content').innerHTML = v();
 }
 function renderAll() {
@@ -3337,6 +3719,33 @@ document.addEventListener('click', function (e) {
   if (d.course) return selectCourse(d.course);
   if (d.view) return setView(d.view);
   if (d.src) { state.src = d.src; return renderContent(); }
+  if (d.qzk) {
+    var n = d.qzk === 'course' ? 20 : 5;
+    var id = d.qzi;
+    if (d.qzk === 'topic') { var selEl = $('qz-topic'); id = selEl && selEl.value; if (!id) return; }
+    var sems = semsInCourse();
+    startQuiz({ kind: d.qzk, id: id, n: n, sem: sems.length === 1 ? sems[0] : null });
+    return;
+  }
+  if (d.opt !== undefined && state.qz && !state.qz.done) {
+    var itc = state.qz.items[state.qz.idx];
+    if (itc.pick < 0) { itc.pick = +d.opt; renderContent(); }
+    return;
+  }
+  if (d.qznext && state.qz) {
+    if (state.qz.idx + 1 < state.qz.items.length) state.qz.idx++;
+    else state.qz.done = true;
+    renderContent();
+    var cc = $('content'); if (cc) cc.scrollIntoView({ block: 'start' });
+    return;
+  }
+  if (d.qzretry && state.qz) {
+    var ids = state.qz.items.filter(function (x) { return x.ord[x.pick] !== x.q.c; }).map(function (x) { return x.q.id; });
+    startQuiz(state.qz.scope, ids);
+    return;
+  }
+  if (d.qzagain && state.qz) { startQuiz(state.qz.scope); return; }
+  if (d.qzquit) { state.qz = null; renderContent(); return; }
   if (d.exam) {
     state.exam = d.exam === 'all' ? 'all' : +d.exam;
     renderContent();
