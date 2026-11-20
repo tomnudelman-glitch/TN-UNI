@@ -37,8 +37,6 @@
   --go-ink: #ffffff;
   --dl: 32%;
   --tl-l: 34%;
-  --tl-hero-s: 34%;
-  --tl-hero-l: 42%;
   --door-s: 36%;
   --door-l: 54%;
   --hero-a: hsl(226 36% 42%);
@@ -69,8 +67,6 @@
     --go-ink: #11141f;
     --dl: 76%;
     --tl-l: 74%;
-    --tl-hero-s: 28%;
-    --tl-hero-l: 27%;
     --door-s: 30%;
     --door-l: 34%;
     --hero-a: hsl(226 30% 28%);
@@ -100,8 +96,6 @@
   --go-ink: #11141f;
   --dl: 76%;
   --tl-l: 74%;
-  --tl-hero-s: 28%;
-  --tl-hero-l: 27%;
   --door-s: 30%;
   --door-l: 34%;
   --hero-a: hsl(226 30% 28%);
@@ -636,10 +630,11 @@ a.pill, a.course { text-decoration: none; }
 }
 @media print {
   .topbar, .side, .bar, .tools, .shellfoot, .exam-hint, #home { display: none !important; }
-  .tl-bar, .tl-from { display: none !important; }
+  .tl-bar, .tl-hero .down { display: none !important; }
   .tl-hero { background: none !important; color: var(--ink) !important; border: 0; box-shadow: none; padding: 0 0 10px; }
   .tl-hero p { color: var(--muted) !important; }
-  .tl-card { box-shadow: none; break-inside: avoid; }
+  .tl-heads { position: static; }
+  .tl-ev, .tl-dot { break-inside: avoid; }
   .app { display: block; }
   .head.panel { border: 0; box-shadow: none; padding: 0 0 8px; }
   .exam { border: 0; box-shadow: none; padding: 0; }
@@ -655,74 +650,75 @@ a.pill, a.course { text-decoration: none; }
 }
 
 /* ---------- ציר זמן ---------- */
+.tlcta { position: relative; overflow: hidden; border: 2px solid var(--outline); border-radius: 26px; box-shadow: 5px 5px 0 var(--pop-c);
+  background: linear-gradient(115deg, hsl(176 30% 38%), hsl(226 34% 42%)); color: #fff; }
+.tlcta-art { position: absolute; inset: 0; width: 100%; height: 100%; color: #fff; opacity: 0.16; z-index: 0; }
+.tlcta-b { position: relative; z-index: 1; padding: 24px clamp(18px, 4vw, 30px) 26px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.tlcta h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(27px, 4.8vw, 36px); line-height: 1.1; }
+.tlcta p { margin: 0; max-width: 56ch; font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.92); }
+.tlcta .go { margin-top: 6px; background: #fff; color: hsl(226 40% 32%); border-color: rgba(0, 0, 0, 0.35); font-size: 17px; }
 .tl-go { background: var(--tint); border: 2px solid var(--outline); border-radius: 14px; box-shadow: 2px 2px 0 var(--pop-c);
   padding: 7px 16px; font-weight: 700; font-size: 15px; color: var(--ink); white-space: nowrap; }
 .tl-go::before { content: "\2193"; margin-inline-end: 6px; color: var(--accent); font-weight: 700; }
 .tl-go:hover { border-color: var(--accent); color: var(--accent); }
-.tlcta { background: var(--surface); border: 2px solid var(--outline); border-radius: 26px; box-shadow: 5px 5px 0 var(--pop-c); }
-.tlcta-b { padding: 22px clamp(18px, 4vw, 26px) 24px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-.tlcta h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4.6vw, 34px); line-height: 1.1; color: var(--ink); }
-.tlcta p { margin: 0; max-width: 60ch; color: var(--muted); font-size: 15.5px; line-height: 1.6; }
-.tlcta-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
-.tlcta-btns .go { margin-top: 0; font-size: 16px; padding: 9px 20px; }
-.tlpage { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-.tl-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
-  padding: 10px 14px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--bg); }
-.tl-hero { border-radius: 26px; border: 2px solid var(--outline); box-shadow: 5px 5px 0 var(--pop-c);
-  background: linear-gradient(135deg, hsl(var(--h) var(--tl-hero-s) var(--tl-hero-l)),
-    hsl(calc(var(--h) + 14) calc(var(--tl-hero-s) - 4%) calc(var(--tl-hero-l) + 8%)));
-  color: #fff; padding: 24px clamp(18px, 4vw, 34px); }
-.tl-hero h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 6vw, 44px); line-height: 1.1; }
-.tl-hero p { margin: 8px 0 0; max-width: 62ch; font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.93); }
-.tl-scope { display: flex; flex-wrap: wrap; gap: 6px; background: var(--tint); border: 2px solid var(--outline);
-  border-radius: 16px; padding: 4px; }
-.tl-scope button { border: 0; background: none; color: var(--muted); font: inherit; font-weight: 700; font-size: 15px;
-  padding: 7px 15px; border-radius: 12px; cursor: pointer; }
-.tl-scope button:hover { color: var(--ink); }
-.tl-scope button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: 2px 2px 0 var(--pop-c); }
-.tl-dir { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); font-size: 14.5px; font-weight: 600; }
-.tl-dir .ar { font-size: 19px; color: var(--accent); }
-.tl-list { list-style: none; margin: 0; padding: 0; }
-.tl-list > li { display: grid; grid-template-columns: clamp(78px, 13vw, 128px) minmax(0, 1fr); gap: 0 14px; }
-.tl-y { padding-top: 14px; text-align: end; font-family: var(--font-display); font-size: clamp(14.5px, 2.3vw, 17.5px);
-  line-height: 1.3; color: hsl(var(--ih, var(--h)) 45% var(--tl-l)); font-variant-numeric: tabular-nums; text-wrap: balance; }
-.tl-stem { position: relative; border-inline-start: 3px solid var(--line); padding: 0 0 18px; padding-inline-start: 22px; }
-.tl-stem::before { content: ""; position: absolute; inset-inline-start: -9px; top: 19px; width: 15px; height: 15px;
-  border-radius: 50%; background: hsl(var(--ih, var(--h)) 42% 52%); border: 2px solid var(--bg); }
-.tl-card { background: var(--surface); border: 2px solid var(--outline); border-radius: 18px; box-shadow: 3px 3px 0 var(--pop-c);
-  padding: 13px 16px 15px; }
-.tl-card h3 { margin: 0; font-family: var(--font-display); font-size: clamp(17px, 2.6vw, 20px); line-height: 1.35;
-  color: var(--ink); text-wrap: balance; }
-.tl-card p { margin: 6px 0 0; max-width: 68ch; font-size: 15.5px; line-height: 1.6; color: var(--ink); }
-.tl-from { margin-top: 10px; display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 13.5px; font-weight: 700;
-  background: hsl(var(--ih, var(--h)) var(--pill-s) var(--pill-l)); border: 2px solid var(--outline); border-radius: 999px;
-  padding: 2px 13px; color: var(--ink); cursor: pointer; }
-.tl-from::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: hsl(var(--ih, var(--h)) 40% 55%); flex: none; }
-.tl-from:hover { box-shadow: 2px 2px 0 var(--pop-c); }
-.tl-list > li.gap { grid-template-columns: clamp(78px, 13vw, 128px) minmax(0, 1fr); }
-.tl-list > li.gap .tl-stem { border-inline-start-style: dotted; border-inline-start-width: 3px; padding-bottom: 10px; }
-.tl-list > li.gap .tl-stem::before { display: none; }
-.tl-list > li.gap .g { display: inline-block; color: var(--muted); font-size: 13.5px; font-weight: 600;
-  background: var(--tint); border: 1px dashed var(--outline); border-radius: 999px; padding: 1px 12px; }
-.tl-list > li.end .tl-stem { border-inline-start-color: var(--accent); padding-bottom: 0; }
-.tl-list > li.end .tl-stem::before { display: none; }
-.tl-list > li.end .ar { position: absolute; inset-inline-start: -13px; bottom: -9px; font-size: 26px; line-height: 1;
-  color: var(--accent); }
-.tl-list > li.end .g { display: inline-block; margin-top: 6px; color: var(--muted); font-size: 14px; font-weight: 600; }
-.tl-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0; color: var(--muted); font-size: 14px; }
-.tl-legend span { display: inline-flex; align-items: center; gap: 7px; }
-.tl-legend i { width: 12px; height: 12px; border-radius: 50%; background: hsl(var(--lh) 42% 52%); }
-.tl-foot { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
-@media (max-width: 640px) {
-  .tl-list > li { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .tl-y { padding: 0; padding-inline-start: 22px; text-align: start; }
-  .tl-stem { padding-top: 2px; }
-  .tl-stem::before { top: 4px; }
-  .tl-y + .tl-stem { border-inline-start: 3px solid var(--line); }
-  .tl-list > li > .tl-y { border-inline-start: 3px solid var(--line); padding-top: 12px; }
-  .tl-list > li.end > .tl-y, .tl-list > li.gap > .tl-y { padding-top: 0; }
-  .tl-card { padding: 12px 14px 14px; }
+
+.tlpage { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.tl-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding: 10px 14px; }
+.tl-hero { position: relative; overflow: hidden; border-radius: 26px; border: 2px solid var(--outline); box-shadow: 5px 5px 0 var(--pop-c);
+  background: linear-gradient(115deg, hsl(176 32% 36%), hsl(226 34% 42%)); color: #fff; padding: 26px clamp(18px, 4vw, 36px) 28px; }
+.tl-hero h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(31px, 6.4vw, 48px); line-height: 1.08; }
+.tl-hero p { margin: 9px 0 0; max-width: 58ch; font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.92); }
+.tl-hero .down { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700;
+  background: rgba(255, 255, 255, 0.16); border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 999px; padding: 3px 14px; }
+
+.tl-heads { display: grid; grid-template-columns: 1fr clamp(62px, 9vw, 92px) 1fr; align-items: center; gap: 0 10px;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4px); z-index: 5; padding: 8px 0; }
+.tl-heads::before { content: ""; position: absolute; inset: 0; background: var(--bg); z-index: -1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+.tl-heads b { font-family: var(--font-display); font-weight: 400; font-size: clamp(15px, 2.4vw, 19px); line-height: 1.2; }
+.tl-heads .ps { text-align: end; color: hsl(226 42% var(--tl-l)); }
+.tl-heads .mes { text-align: start; color: hsl(176 38% var(--tl-l)); }
+.tl-heads .mid { text-align: center; color: var(--muted); font-size: 20px; }
+
+.tl-grid { display: grid; grid-template-columns: 1fr clamp(62px, 9vw, 92px) 1fr; gap: 0 10px; align-items: center; }
+.tl-rail { justify-self: center; align-self: stretch; width: 3px; border-radius: 3px; min-height: 100%;
+  background: linear-gradient(to bottom, hsl(226 40% 58%), hsl(200 30% 56%), hsl(176 34% 54%), hsl(200 30% 56%), hsl(226 40% 58%)); }
+.tl-ev { appearance: none; -webkit-appearance: none; background: none; border: 0; font: inherit; cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px; padding: 18px 2px; width: 100%;
+  text-align: var(--al); align-items: var(--ai); }
+.tl-ev:hover h3, .tl-ev:focus-visible h3 { text-decoration: underline; text-decoration-color: hsl(var(--ih) 40% 55%);
+  text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.tl-ev:focus-visible { outline: 2px solid hsl(var(--ih) 40% 52%); outline-offset: 4px; border-radius: 12px; }
+.tl-ev .y { font-family: var(--font-display); font-size: clamp(19px, 3.2vw, 25px); line-height: 1.1;
+  color: hsl(var(--ih) 45% var(--tl-l)); font-variant-numeric: tabular-nums; }
+.tl-ev h3 { margin: 1px 0 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(17px, 2.7vw, 21px);
+  line-height: 1.3; color: var(--ink); text-wrap: balance; }
+.tl-ev p { margin: 4px 0 0; max-width: 42ch; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.tl-dot { justify-self: center; align-self: center; width: clamp(40px, 6.4vw, 52px); height: clamp(40px, 6.4vw, 52px);
+  border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: 3px solid hsl(var(--ih) 40% 52%);
+  box-shadow: 0 0 0 7px var(--bg), 0 0 0 10px hsl(var(--ih) 40% 52% / 0.16); position: relative; }
+.tl-dot svg { width: 56%; height: 56%; color: hsl(var(--ih) 42% var(--tl-l)); }
+.tl-era { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  margin: 10px 0 2px; }
+.tl-era::before, .tl-era::after { content: ""; height: 2px; background: linear-gradient(to left, var(--line), transparent); }
+.tl-era::after { background: linear-gradient(to right, var(--line), transparent); }
+.tl-era span { font-family: var(--font-display); font-size: clamp(13px, 2vw, 15px); letter-spacing: 0.08em; color: var(--muted);
+  background: var(--tint); border: 2px solid var(--line); border-radius: 999px; padding: 3px 16px; white-space: nowrap; }
+.tl-fin { justify-self: center; display: grid; place-items: center; gap: 2px; padding-top: 4px; }
+.tl-fin .ar { font-size: 30px; line-height: 0.8; color: hsl(226 40% 55%); }
+.tl-finnote { margin: 2px 0 0; text-align: center; color: var(--muted); font-size: 14.5px; }
+.tl-foot { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.65; text-align: center; max-width: 76ch; align-self: center; }
+@media (max-width: 720px) {
+  .tl-heads { display: none; }
+  .tl-grid { grid-template-columns: clamp(46px, 14vw, 58px) minmax(0, 1fr); gap: 0 10px; }
+  .tl-rail { grid-column: 1 !important; }
+  .tl-dot { grid-column: 1 !important; width: 38px; height: 38px; box-shadow: 0 0 0 6px var(--bg); align-self: start; margin-top: 18px; }
+  .tl-ev { grid-column: 2 !important; text-align: start !important; align-items: flex-start !important; padding-block: 14px 18px; }
+  .tl-ev .who { display: inline-block; margin-top: 7px; font-size: 12.5px; font-weight: 700; color: var(--ink);
+    background: hsl(var(--ih) var(--pill-s) var(--pill-l)); border: 2px solid var(--outline); border-radius: 999px; padding: 1px 11px; }
+  .tl-fin { grid-column: 1 !important; }
 }
+@media (min-width: 721px) { .tl-ev .who { display: none; } }
 
 :root { font-synthesis: none; }
 </style>
@@ -744,6 +740,8 @@ a.pill, a.course { text-decoration: none; }
 <symbol id="i-palm" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 44c0-9 1-17 4-25"/><path d="M28 19c-5-8-14-7-19-3M28 19c-2-9 4-13 11-12M28 19c6-5 12-3 14 3M28 19c5 4 5 10 3 15"/><path d="M14 44h20"/></symbol>
 <symbol id="i-book" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 12c-5-4-12-5-18-4v29c6-1 13 0 18 4 5-4 12-5 18-4V8c-6-1-13 0-18 4z"/><path d="M24 12v29"/></symbol>
 <symbol id="i-pin" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 44S11 32 11 21a13 13 0 0 1 26 0c0 11-13 23-13 23z"/><circle cx="24" cy="21" r="4.5"/></symbol>
+<symbol id="i-crown" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 38h30"/><path d="M9 33L5.5 13l9.5 7.5L24 7l9 13.5L42.5 13 39 33z"/></symbol>
+<symbol id="i-cog" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="6.5"/><circle cx="24" cy="24" r="13.5"/><path d="M24 4v6.5M24 37.5V44M4 24h6.5M37.5 24H44M9.9 9.9l4.6 4.6M33.5 33.5l4.6 4.6M38.1 9.9l-4.6 4.6M14.5 33.5l-4.6 4.6"/></symbol>
 </defs></svg>
 <div id="home" class="home" hidden>
   <section class="hero" aria-labelledby="hero-title">
@@ -760,14 +758,16 @@ a.pill, a.course { text-decoration: none; }
   </section>
   <div class="doors" id="doors"></div>
   <section class="tlcta">
+    <svg class="tlcta-art" viewBox="0 0 900 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <path d="M0 150 C 150 150 150 50 300 50 S 450 150 600 150 750 50 900 50" fill="none" stroke="currentColor" stroke-width="3"/>
+      <circle cx="150" cy="100" r="9" fill="currentColor"/><circle cx="300" cy="50" r="9" fill="currentColor"/>
+      <circle cx="450" cy="100" r="9" fill="currentColor"/><circle cx="600" cy="150" r="9" fill="currentColor"/>
+      <circle cx="750" cy="100" r="9" fill="currentColor"/>
+    </svg>
     <div class="tlcta-b">
-      <h2>ציר הזמן</h2>
-      <p>כל האירועים ההיסטוריים הבולטים שנלמדו עד כה, לפי סדר כרונולוגי. אחד לכל חוג, ואחד שמחבר את שניהם.</p>
-      <div class="tlcta-btns">
-        <button class="go" data-tl="ps" style="--dh:226">מדעי המדינה</button>
-        <button class="go" data-tl="mes" style="--dh:176">מזרח תיכון</button>
-        <button class="go" data-tl="all" style="--dh:36">שני החוגים יחד</button>
-      </div>
+      <h2>ציר הזמן של התואר</h2>
+      <p>עשרים אירועי הדגל של שני החוגים, על ציר אחד, לפי סדר השנים.</p>
+      <button class="go" data-tl="1">פתיחת הציר ←</button>
     </div>
   </section>
   <p class="foot">הלוגו למעלה מחזיר לכאן מכל מקום באתר.</p>
@@ -802,7 +802,7 @@ a.pill, a.course { text-decoration: none; }
 <p>שאר הנושאים באתר מבוססים על סיכומי השיעור האישיים שלי מההרצאות. בראש כל נושא מופיעה תווית שאומרת על מה הוא מבוסס, ולידה שם המקור.</p>
 
     <h3>ציר הזמן</h3>
-    <p>ציר הזמן מסדר את האירועים הבולטים מתוך הנושאים שסוכמו, ולא את כולם. חלק מהשנים שמופיעות בו לא הופיעו בסיכומי השיעור עצמם ונוספו מידע היסטורי מוכר כדי לסדר את הציר כרונולוגית.</p>
+    <p>ציר הזמן מציג עשרה אירועי דגל מכל חוג, ולא את כל מה שמופיע בסיכומים. חלק מהשנים שבו לא הופיעו בסיכומי השיעור עצמם, ונוספו מתוך ידע היסטורי מוכר כדי לסדר את הציר כרונולוגית.</p>
 
     <h3>תמונות</h3>
     <p>רוב התמונות הן צילומים של יצירות היסטוריות שהן נחלת הכלל (ציורים, דיוקנאות ומסמכים בני מאות שנים), ולצידן כמה תצלומים ומפות להמחשה. סמל המדינה ודגל ישראל מופיעים בעמוד השער כעיטור בלבד, ואינם מסמנים גוף רשמי כלשהו.</p>
@@ -821,23 +821,25 @@ a.pill, a.course { text-decoration: none; }
 <div id="tl" class="tlpage" hidden>
   <div class="tl-bar panel">
     <button class="brand" data-home="1" title="לעמוד הראשי"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6" width="20" height="20" fill="currentColor"/><rect x="6" y="6" width="20" height="20" fill="currentColor" opacity=".5" transform="rotate(45 16 16)"/></svg>המסכם</button>
-    <nav class="tl-scope" id="tl-scope" role="tablist" aria-label="היקף הציר"></nav>
+    <span class="tl-foot" style="margin:0;font-size:13.5px">20 אירועי דגל · שני החוגים על ציר אחד</span>
   </div>
   <section class="tl-hero">
-    <h1 id="tl-title"></h1>
-    <p id="tl-lede"></p>
+    <h1>ציר הזמן של התואר</h1>
+    <p>עשרים אירועי הדגל של התואר, עשרה מכל חוג, על ציר אחד ולפי סדר השנים.</p>
+    <span class="down"><span aria-hidden="true">↓</span> הציר יורד עם השנים</span>
   </section>
-  <p class="tl-dir"><span class="ar" aria-hidden="true">↓</span> הציר יורד עם השנים: המוקדם למעלה, המאוחר למטה.</p>
-  <p class="tl-legend" id="tl-legend" hidden></p>
-  <ol class="tl-list" id="tl-body"></ol>
-  <p class="tl-foot" id="tl-foot"></p>
+  <div class="tl-heads" aria-hidden="true">
+    <b class="ps">מדעי המדינה</b><span class="mid">↓</span><b class="mes">לימודי המזרח התיכון</b>
+  </div>
+  <div class="tl-grid" id="tl-body"></div>
+  <p class="tl-foot">רק אירועי הדגל, לא כל מה שמופיע בסיכומים. חלק מהשנים לא הופיעו בסיכומי השיעור עצמם ונוספו כאן כדי לסדר את הציר. לחיצה על אירוע פותחת את הקורס שממנו הוא בא.</p>
 </div>
 
 <div id="shell">
 <header class="topbar panel">
   <button class="brand" data-home="1" title="לעמוד הראשי"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6" width="20" height="20" fill="currentColor"/><rect x="6" y="6" width="20" height="20" fill="currentColor" opacity=".5" transform="rotate(45 16 16)"/></svg>המסכם</button>
   <nav class="switch" id="tracks" role="tablist" aria-label="חוג"></nav>
-  <button class="tl-go" data-tl="track">ציר זמן</button>
+  <button class="tl-go" data-tl="1">ציר זמן</button>
 </header>
 
 <div class="app">
@@ -3837,9 +3839,8 @@ function renderAll() {
   var page = state.tl ? 'tl' : (state.home ? 'home' : 'shell');
   $('home').hidden = page !== 'home'; $('tl').hidden = page !== 'tl'; $('shell').hidden = page !== 'shell';
   if (page === 'tl') {
-    var th = TL_HUE[state.tl] || 226;
-    document.documentElement.style.setProperty('--h', th);
-    document.documentElement.style.setProperty('--al', (th >= 40 && th <= 200) ? '30%' : '38%');
+    document.documentElement.style.setProperty('--h', 226);
+    document.documentElement.style.setProperty('--al', '38%');
     renderTL(); return;
   }
   if (page === 'home') { document.documentElement.style.setProperty('--h', 226); document.documentElement.style.setProperty('--al', '38%'); renderHome(); return; }
@@ -3905,107 +3906,56 @@ function renderHome() {
 }
 
 var TL = [
-  { y: -450, lab: 'המאה ה-5 לפנה"ס', tr: 'ps', c: 'thought', t: 'אתונה הדמוקרטית', d: 'עיר-מדינה עם דמוקרטיה ישירה: אסיפת העם מתכנסת כל כ-10 ימים, מועצת ה-500 נבחרת בהגרלה, ובתי הדין הם מושבעים בלי שופטים ובלי עורכי דין. כאן נולדת המחשבה המדינית שהקורס עוסק בה.' },
-  { y: -399, lab: '399 לפנה"ס', tr: 'ps', c: 'thought', t: 'משפט סוקרטס', d: 'שלושה אישומים: כפירה באלים, השחתת הנוער והפיכת הטיעון החלש לחזק. הורשע ב-280 קולות נגד 220, ונגזר עליו מוות. המשפט הוא ביקורת חריפה על הדמוקרטיה האתונאית ועל יחסה לפילוסופיה.' },
-  { y: -387, lab: '387 לפנה"ס', tr: 'ps', c: 'thought', t: 'אפלטון מקים את האקדמיה', d: 'אחרי שצפה בהוצאתו להורג של סוקרטס. האקדמיה החזיקה כ-900 שנה, ואחד מתלמידיה היה אריסטו. ב"פוליתיאה" הוא שואל מהו צדק ומהי מדינה ראויה.' },
-  { y: -335, lab: 'המאה ה-4 לפנה"ס', tr: 'ps', c: 'thought', t: 'אריסטו, "פוליטיקה"', d: 'המדינה היא שותפות שמכוונת לטוב העליון, והיא קיימת על-פי הטבע; האדם הוא בעל-חיים מדיני. מכאן מיון ששת המשטרים: ישרים לתועלת הכלל מול סטיות לתועלת השליט.' },
-  { y: 525, lab: 'המאה ה-6', tr: 'mes', c: 'islam', t: 'ערב שלפני האסלאם', d: 'חברה שבטית שבה ההשתייכות לשבט היא הביטחון הקיומי, מכה כמרכז מסחר ופולחן אלילי, ושירה שבטית שהיא מקור מרכזי לתקופה ("שבע התלויות").' },
-  { y: 570, lab: '570', tr: 'mes', c: 'islam', t: 'שנת הפיל: מוחמד נולד', d: 'מוחמד בן עבדאללה נולד במכה, בענף בני האשם שבשבט קורייש, ומתייתם מאב ומאם. המסורת מזהה את האירוע שבסורת אל-פיל עם אותה שנה.' },
-  { y: 610, lab: '610', tr: 'mes', c: 'islam', t: 'ההתגלות הראשונה', d: 'במערת חירא נגלה אליו גבריאל ואומר "קרא" (לילת אל-קדר, סורת אל-עלק). מכאן הוא הופך לנביא, ו"אקרא" הוא גם לקרוא וגם השליחות עצמה: לקרוא ולשכנע.' },
-  { y: 613, lab: '613', tr: 'mes', c: 'islam', t: 'ההכרזה על הדעווה', d: 'ההטפה יוצאת מהמעגל הקרוב אל הזירה הפומבית במכה.' },
-  { y: 632, lab: '632', tr: 'mes', c: 'mehist', t: 'מות הנביא ושאלת הירושה', d: 'מוחמד הוא חותם הנביאים, ולכן "ירושה" פירושה הובלת הקהילה ולא נבואה נוספת. הסונים: בחירה אנושית-פוליטית לפי כישורים, ואבו בכר נבחר בשורא ובאעיה. השיעים: ייעוד אלוהי וקשר דם — עלי ואהל אל-בית.' },
-  { y: 633, lab: '632–661', tr: 'mes', c: 'mehist', t: 'ארבעת הח’ליפים (ראשידון)', d: 'תור הזהב בעיני הסונים. עלי מונה בסוף לח’ליף הרביעי ומוכר בעיני שני הצדדים, אך המחנה שסביבו גדל בהדרגה — ושם מתחיל הפילוג.' },
-  { y: 661, lab: '661 ואילך', tr: 'mes', c: 'mehist', t: 'השושלת האומיית ואחריה העבאסית', d: 'השלטון עובר לדמשק (אומיים) ואחר כך לבגדאד (עבאסים). בית עלי נדחק מההנהגה, וזה הרקע למרד.' },
-  { y: 680, lab: '680', tr: 'mes', c: 'mehist', t: 'קרב כרבלא', d: 'חוסיין, בנו של עלי, מורד כדי להחזיר את השלטון לבית עלי — ונהרג. המרד נכשל, השיעה עוברת מאקטיביזם לפסיביות, ונקבע רעיון ההקרבה. כרבלא ונג’אף הופכות לערי קודש.' },
-  { y: 874, lab: '874', tr: 'mes', c: 'mehist', t: 'הנסתרות', d: 'האמאם ה-12, ילד, נעלם. בתחילה נשמר קשר דרך שליחים ואחר כך נפסק. לפי השיעה הוא לא מת אלא יחזור כאל-מהדי — ואנחנו עדיין בתקופת ההעלמות, שבה אנשי הדת מילאו את החלל.' },
-  { y: 950, lab: 'המאה ה-10', tr: 'mes', c: 'mehist', t: 'ארבע אסכולות ההלכה הסוניות מתקבעות', d: 'אצל הסונים ההלכה נגזרת מקוראן, חדית’, עיזמא וקיאס, והיחיד הולך לפי אסכולה. בשיעה לא התקבעו אסכולות, ונותר מקום לאג’תהאד — פרשנות רציונלית של פוסק יחיד.' },
-  { y: 1215, lab: '1215', tr: 'ps', c: 'soc', t: 'המגנה כרטה', d: 'הברונים כופים על המלך ג’ון אמנה אחרי שהטיל עליהם מסים: החוק עומד מעל המלך, ולאצולה יש זכות לפקח עליו. אבן הפינה להגבלת השליט.' },
-  { y: 1337, lab: '1337–1453', tr: 'ps', c: 'soc', t: 'מלחמת מאה השנים', d: 'עימות שושלתי-פיאודלי בין אנגליה לצרפת שהפך לעימות לאומי. צרפת יוצאת ממנו כמדינה מאוחדת עם זהות לאומית.' },
-  { y: 1347, lab: '1347–1351', tr: 'ps', c: 'soc', t: 'המגפה השחורה', d: 'הרסה כפרים שלמים וחשפה את חולשת הכנסייה. על הרקע הזה עולה הרנסנס באיטליה, עם ההומניזם וראיית האדם במרכז.' },
-  { y: 1400, lab: '1400–1468', tr: 'ps', c: 'soc', t: 'הדפוס של גוטנברג', d: 'הרחיב את תפוצת הספרים ואת מספר הקוראים, פעל כאמצעי תקשורת המונים והאיץ את גיבושה של תרבות לאומית ושל שפה אחת.' },
-  { y: 1455, lab: '1455–1485', tr: 'ps', c: 'soc', t: 'מלחמת השושנים ובית טיודור', d: 'המבנה הפיאודלי באנגליה משתנה. לפי עקרון הבכורה רק הבכור ירש, והבנים האחרים הצטרפו לשכבות הביניים — וכך נוצרו אצולה פתוחה ומעמד ביניים, ופרלמנט שעובד יחד עם המלך.' },
-  { y: 1517, lab: '1517', tr: 'ps', c: 'soc', t: 'הרפורמציה', d: 'לותר תולה את 95 התזות בוויטנברג ומאשים את הכנסייה בשחיתות. התזות מודפסות ומתפשטות תוך שבועות, ואחדות העולם הנוצרי נשברת.' },
-  { y: 1534, lab: '1534', tr: 'ps', c: 'soc', t: 'הנרי השמיני ראש הכנסייה האנגליקנית', d: 'הפרלמנט מאשר את הצעד, והדת נקבעת בידי השלטון. באותה שנה מקימה הכנסייה הקתולית את מסדר הישועים, כחלק מהרפורמציה הנגדית.' },
-  { y: 1550, lab: 'המאה ה-16', tr: 'mes', c: 'mehist', t: 'איראן הופכת שיעית', d: 'עד אז הייתה סונית, בעיקר מהזרם הסופי המיסטי. הסיפור השיעי מתחיל דווקא בעיראק, ומכאן המתח ההיסטורי בין המרכז העיראקי למרכז האיראני, שנמשך עד היום.' },
-  { y: 1555, lab: '1555', tr: 'ps', c: 'soc', t: 'שלום אוגסבורג', d: '"אשר השלטון לו, הדת לו": כל נסיך קובע את דת מדינתו. ההסדר הוביל להגירת אלפי משפחות, אך לא עצר את מלחמות הדת.' },
-  { y: 1618, lab: '1618–1648', tr: 'ps', c: 'soc', t: 'מלחמת שלושים השנים ושלום וסטפליה', d: 'מלחמת דת שהפכה למאבק פוליטי בין צרפת, ספרד, שוודיה ואוסטריה. שלום וסטפליה קובע סדר חדש של מדינות ריבוניות באירופה.' },
-  { y: 1628, lab: '1628', tr: 'ps', c: 'soc', t: 'עצומת הזכויות', d: 'הפרלמנט כופה אותה על צ’ארלס הראשון. צ’ארלס מפזר את הפרלמנט ושולט 11 שנה בלעדיו, עד שנזקק לכסף למלחמה.' },
-  { y: 1642, lab: '1642–1649', tr: 'ps', c: 'soc', t: 'המהפכה הפוריטנית', d: 'מלחמת אזרחים בין המלך לפרלמנט. ב-1649 צ’ארלס הראשון מוצא להורג ומוקמת רפובליקה בהנהגת קרומוול, עם סובלנות דתית יחסית וחלוקת רשויות. אחרי מותו (1658) הוחזרה המלוכה.' },
-  { y: 1651, lab: '1651', tr: 'ps', c: 'soc', t: 'הובס, "לוויתן"', d: 'מתוך פחד מאנרכיה: הסמכות צריכה להיות בידי אדם אחד ולא בידי קבוצה שעלולה להתפלג. הטיעון המרכזי של האבסולוטיזם.' },
-  { y: 1687, lab: '1687', tr: 'ps', c: 'soc', t: 'ניוטון, "העקרונות המתמטיים"', d: 'חוק הכבידה האוניברסלי משלים את המהפכה המדעית: כל גוף בעולם כפוף לאותם חוקים, והשינויים ניתנים למדידה מתמטית מדויקת.' },
-  { y: 1688, lab: '1688–1689', tr: 'ps', c: 'soc', t: 'המהפכה המפוארת', d: 'קואליציה של טורים וויגים מזמינה את וילהלם מאורנז’ ואת מרי. ג’יימס השני בורח, וב-1689 מוכתרים השניים: מעתה המלך תלוי בפרלמנט, ומגילת הזכויות מעגנת את הסדר. שלב מרכזי בהתפתחות הליברליזם.' },
-  { y: 1750, lab: 'המאה ה-18', tr: 'ps', c: 'soc', t: 'עידן הנאורות', d: 'אמון בתבונה, בידע ובקידמה, ומרכזו בפריז: מונטסקייה, וולטר ורוסו. לצידם "עריצים נאורים" כפרידריך הגדול (1740–1786), שאימצו את הרעיונות בלי לוותר על כוחם.' },
-  { y: 1776, lab: '1776', tr: 'ps', c: 'soc', t: 'אדם סמית, "עושר העמים"', d: 'נגד מונופולים והגבלות סחר: כל פרט דואג לעצמו, ו"היד הנעלמה" מאזנת בין ביקוש להיצע ומכתיבה את המחירים.' },
-  { y: 1787, lab: '1787–1788', tr: 'ps', c: 'gov', t: 'הפדרליסט מס’ 10', d: 'מדיסון: פלגנות אי אפשר לסלק מרפובליקה, ולכן יש לתקן את המשטר. רפובליקה גדולה וחלוקה פדרלית מקטינות את הסיכון לעריצות הרוב.' },
-  { y: 1789, lab: '1789', tr: 'ps', c: 'soc', t: 'המהפכה הצרפתית', d: 'הוויכוחים של הנאורות על מלוכה, על פרלמנט ועל דמוקרטיה ישירה מתפרצים למעשה פוליטי.' },
-  { y: 1844, lab: '1844', tr: 'ps', c: 'gov', t: 'מרקס: כתבי הניכור', d: 'מרקס (1818–1883) מגיע מההגלים הצעירים בברלין. בקפיטליזם הוא מזהה ניכור בארבעה מישורים: מהעבודה, ממוצר העבודה, מבני אדם אחרים ומהטבע האנושי.' },
-  { y: 1890, lab: 'סוף המאה ה-19', tr: 'ps', c: 'gov', t: 'מדע המדינה נעשה דיסציפלינה', d: 'ג’ון ברג’ס מקים את המחלקה הראשונה למדע המדינה, שהיה עד אז חלק מהמחלקה להיסטוריה. במקביל דורקהיים מסביר הבדלי התאבדות בין קהילות דתיות ברמת האינטגרציה שלהן — חקר חברה בשיטה מדעית.' },
-  { y: 1891, lab: 'סוף המאה ה-19', tr: 'mes', c: 'mehist', t: '"המזרח התיכון", פאן-ערביות ואסלאם פוליטי', d: 'הבריטים טובעים את המושג "המזרח התיכון" — האמצע בין אנגליה להודו. הערבים באימפריה העות’מנית מתחילים להגדיר את עצמם כעם בעל שאיפות פוליטיות, והסונים חוזרים לדבר על חיבור דת ופוליטיקה.' },
-  { y: 1925, lab: 'המחצית הראשונה של המאה ה-20', tr: 'ps', c: 'gov', t: 'ובר, פופר והגישה הביהביורלית', d: 'ובר: פוליטיקה אינה שייכת לאולם ההרצאות. פופר: מדעיות נמדדת ביכולת להפריך. מריאם ואסכולת שיקגו: לחקור התנהגות פוליטית בדרך מדעית — זה המעבר ממדע המדינה הקלאסי למודרני.' },
-  { y: 1948, lab: '1948', tr: 'ps', c: 'gov', t: 'הכרזת העצמאות', d: 'בן-גוריון מציג אותה כשיא האחדות מראשית ההיסטוריה היהודית ונשען דווקא על התלמוד, ובכך מייצר רגע ייסוד — ממש כמו הייסוד של מדיסון.' },
-  { y: 1955, lab: 'שנות ה-50', tr: 'ps', c: 'isr', t: 'מפא"י הדומיננטית', d: 'יותר מ-400 סניפים וכ-150 אלף חברים. המפלגות הגדולות משמשות "סוכני תיאום" של החברה הישראלית, והדומיננטיות נמשכת עד 1977.' },
-  { y: 1965, lab: '1965–1973', tr: 'ps', c: 'isr', t: 'ההיחלשות מתחילה', d: 'פרישת בן-גוריון (1965), מלחמת ששת הימים ומלחמת יום כיפור (1973) מערערים את האמון. המפלגות מאבדות את תפקיד התיאום והופכות ל"מפלגות שלד". ב-1973 נחקק חוק מימון מפלגות.' },
-  { y: 1977, lab: '1977', tr: 'ps', c: 'isr', t: 'המהפך', d: 'הליכוד עולה לשלטון ומסתיימת הדומיננטיות של מפא"י והמערך. ב-1981 שתי הגדולות עוד מושיבות יחד 95 חברי כנסת, ונראה שישראל עוברת לדו-מפלגתיות.' },
-  { y: 1996, lab: '1996–2001', tr: 'ps', c: 'isr', t: 'הבחירה הישירה לראשות הממשלה', d: 'ההצבעה מתפצלת בין ראש ממשלה לרשימה, והמפלגות הגדולות נפגעות. גם אחרי ביטול השיטה הן אינן חוזרות לרמות שלפניה. ב-1992 נחקק חוק המפלגות.' },
-  { y: 1999, lab: '1999', tr: 'ps', c: 'isr', t: 'שיא הפיצול', d: 'ENPP מגיע ל-8.69, הערך הגבוה ביותר בדמוקרטיות פרלמנטריות מאז 1945, ושתי הגדולות יורדות ל-45 מנדטים יחד. חברות המפלגות צונחת מכ-17% בסוף שנות ה-70 לכ-4% בשנים 2012–2014.' }
+  { y: -399, lab: '399 לפנה"ס', tr: 'ps', c: 'thought', i: 'i-gavel', t: 'משפט סוקרטס', d: 'הורשע ב-280 קולות נגד 220 ונידון למוות. הביקורת החריפה ביותר על הדמוקרטיה האתונאית.' },
+  { y: -350, lab: 'המאה ה-4 לפנה"ס', tr: 'ps', c: 'thought', i: 'i-columns', t: 'אפלטון ואריסטו', d: 'מהו צדק, ומהי המדינה הראויה. שתי התשובות שכל המחשבה המדינית מתווכחת איתן מאז.' },
+  { y: 525, lab: 'המאה ה-6', tr: 'mes', c: 'islam', i: 'i-palm', t: 'ערב שלפני האסלאם', d: 'חברה שבטית, מכה כמרכז מסחר ופולחן אלילי, ושירה שבטית שהיא המקור העיקרי לתקופה.' },
+  { y: 570, lab: '570', tr: 'mes', c: 'islam', i: 'i-pin', t: 'שנת הפיל: מוחמד נולד', d: 'במכה, בענף בני האשם שבשבט קורייש.' },
+  { y: 610, lab: '610–613', tr: 'mes', c: 'islam', i: 'i-star8', t: 'ההתגלות והדעווה', d: 'במערת חירא נגלה אליו גבריאל, וכעבור שלוש שנים ההטפה יוצאת לפומבי.' },
+  { y: 632, lab: '632', tr: 'mes', c: 'mehist', i: 'i-dome', t: 'מות הנביא', d: 'מי יוביל את הקהילה? כאן נפתח הפילוג בין הסונים לשיעים.' },
+  { y: 661, lab: '661 ואילך', tr: 'mes', c: 'mehist', i: 'i-compass', t: 'אומיים ועבאסים', d: 'השלטון עובר לדמשק ואחר כך לבגדאד, ובית עלי נדחק החוצה.' },
+  { y: 680, lab: '680', tr: 'mes', c: 'mehist', i: 'i-flag', t: 'קרב כרבלא', d: 'חוסיין נהרג והמרד נכשל. הרגע המכונן של השיעה ושל רעיון ההקרבה.' },
+  { y: 874, lab: '874', tr: 'mes', c: 'mehist', i: 'i-star', t: 'הנסתרות', d: 'האמאם ה-12 נעלם. לפי השיעה הוא יחזור כאל-מהדי, ואנחנו עדיין מחכים.' },
+  { y: 950, lab: 'המאה ה-10', tr: 'mes', c: 'mehist', i: 'i-book', t: 'אסכולות ההלכה הסוניות', d: 'ארבע אסכולות מתקבעות. בשיעה לא התקבעו אסכולות, ונשאר מקום לאג’תהאד.' },
+  { y: 1215, lab: '1215', tr: 'ps', c: 'soc', i: 'i-scales', t: 'המגנה כרטה', d: 'לראשונה: החוק עומד מעל המלך, ולאצולה יש זכות לפקח עליו.' },
+  { y: 1517, lab: '1517', tr: 'ps', c: 'soc', i: 'i-book', t: 'הרפורמציה', d: '95 התזות של לותר מודפסות ומתפשטות, ואחדות העולם הנוצרי נשברת.' },
+  { y: 1550, lab: 'המאה ה-16', tr: 'mes', c: 'mehist', i: 'i-globe', t: 'איראן הופכת שיעית', d: 'עד אז הייתה סונית-סופית. הסיפור השיעי התחיל דווקא בעיראק, והמתח הזה נמשך עד היום.' },
+  { y: 1651, lab: '1651', tr: 'ps', c: 'soc', i: 'i-crown', t: 'הובס, "לוויתן"', d: 'מפחד האנרכיה: כל הסמכות בידי אדם אחד. כתב היסוד של האבסולוטיזם.' },
+  { y: 1688, lab: '1688–1689', tr: 'ps', c: 'soc', i: 'i-ballot', t: 'המהפכה המפוארת', d: 'המלך תלוי מעתה בפרלמנט, ומגילת הזכויות מעגנת את הסדר החדש.' },
+  { y: 1750, lab: 'המאה ה-18', tr: 'ps', c: 'soc', i: 'i-star', t: 'עידן הנאורות', d: 'תבונה, ידע וקידמה, ובמרכז פריז: מונטסקייה, וולטר ורוסו.' },
+  { y: 1789, lab: '1789', tr: 'ps', c: 'soc', i: 'i-flag', t: 'המהפכה הצרפתית', d: 'הוויכוחים של הנאורות על שלטון וריבונות יורדים לרחוב.' },
+  { y: 1850, lab: 'המאה ה-19', tr: 'ps', c: 'gov', i: 'i-cog', t: 'מרקס', d: 'ניכור, סתירות הקפיטליזם ומהפכה. הביקורת שהגדירה את השמאל הרדיקלי.' },
+  { y: 1891, lab: 'סוף המאה ה-19', tr: 'mes', c: 'mehist', i: 'i-compass', t: '"המזרח התיכון" נולד', d: 'הבריטים טובעים את השם, והערבים באימפריה העות’מנית מתחילים להגדיר את עצמם כעם.' },
+  { y: 1948, lab: '1948–1977', tr: 'ps', c: 'isr', i: 'i-flagil', t: 'מדינת ישראל', d: 'מהכרזת העצמאות, דרך הדומיננטיות של מפא"י, ועד המהפך של 1977.' }
 ];
-var TL_C = { thought: 'מחשבה מדינית', soc: 'חברה, פוליטיקה ותרבות', gov: 'ממשל ופוליטיקה', isr: 'פוליטיקה בישראל',
-  rm: 'שיטות מחקר', mehist: 'תולדות המזרח התיכון', islam: 'תולדות האסלאם', ott: 'האימפריה העות’מנית' };
-var TL_SCOPES = [['ps', 'מדעי המדינה'], ['mes', 'מזרח תיכון'], ['all', 'שני החוגים יחד']];
-var TL_HUE = { ps: 226, mes: 176, all: 36 };
-var TL_TEXT = {
-  ps: ['ציר הזמן · מדעי המדינה',
-    'מאתונה הדמוקרטית ועד המפלגות בישראל: האירועים, הספרים והרעיונות הבולטים מתוך הקורסים של החוג, לפי סדר כרונולוגי.'],
-  mes: ['ציר הזמן · מזרח תיכון',
-    'מערב שלפני האסלאם ועד סוף המאה ה-19: ציוני הדרך הבולטים מתוך הקורסים של החוג, לפי סדר כרונולוגי.'],
-  all: ['ציר הזמן של התואר',
-    'שני החוגים על ציר אחד. האירועים מסודרים לפי השנה בלי קשר לחוג, וצבע הנקודה מראה מאיזה חוג כל אירוע בא.']
-};
-function tlYears(n) {
-  if (n >= 1000) return 'כ-' + (Math.round(n / 100) / 10).toFixed(1).replace('.0', '') + ' אלף שנה';
-  return 'כ-' + Math.round(n / 50) * 50 + ' שנה';
-}
-function tlItems(sc) {
-  return TL.filter(function (e) { return sc === 'all' || e.tr === sc; });
-}
+var TL_C = { thought: 'תולדות המחשבה המדינית', soc: 'חברה, פוליטיקה ותרבות', gov: 'מבוא לממשל ופוליטיקה',
+  isr: 'הפוליטיקה בישראל', mehist: 'תולדות המזרח התיכון', islam: 'תולדות האסלאם' };
+var TL_HUE = { ps: 226, mes: 176 };
+var TL_ERAS = [[500, 'העת העתיקה'], [1000, 'ראשית האסלאם'], [1700, 'ימי הביניים והעת החדשה המוקדמת'], [9999, 'העת החדשה']];
+function tlEra(y) { for (var i = 0; i < TL_ERAS.length; i++) if (y < TL_ERAS[i][0]) return TL_ERAS[i][1]; return ''; }
 function renderTL() {
-  var sc = state.tl, list = tlItems(sc), txt = TL_TEXT[sc];
-  $('tl-scope').innerHTML = TL_SCOPES.map(function (s) {
-    return '<button role="tab" data-tl="' + s[0] + '" aria-selected="' + (s[0] === sc) + '">' + s[1] + '</button>';
-  }).join('');
-  $('tl-title').textContent = txt[0];
-  $('tl-lede').textContent = txt[1];
-  var lg = $('tl-legend');
-  lg.hidden = sc !== 'all';
-  if (sc === 'all') {
-    lg.innerHTML = TRACKS.map(function (t) {
-      return '<span style="--lh:' + TL_HUE[t.id] + '"><i></i>' + t.name + '</span>';
-    }).join('');
-  }
-  var out = '', prev = null;
-  list.forEach(function (e) {
-    var ih = sc === 'all' ? TL_HUE[e.tr] : TL_HUE[sc];
-    if (prev !== null && e.y - prev > 220) {
-      out += '<li class="gap" aria-hidden="true"><span class="tl-y"></span><div class="tl-stem"><span class="g">\u22ef ' + tlYears(e.y - prev) + '</span></div></li>';
+  var out = '', era = '', r = 1;
+  TL.forEach(function (e) {
+    var ih = TL_HUE[e.tr], ps = e.tr === 'ps', nera = tlEra(e.y);
+    if (nera !== era) {
+      era = nera;
+      out += '<div class="tl-era" style="grid-row:' + r + ';grid-column:1/-1"><span>' + era + '</span></div>';
+      r++;
     }
-    prev = e.y;
-    out += '<li style="--ih:' + ih + '">' +
-      '<span class="tl-y"><bdi dir="auto">' + e.lab + '</bdi></span>' +
-      '<div class="tl-stem"><article class="tl-card"><h3>' + e.t + '</h3><p>' + e.d + '</p>' +
-      '<button class="tl-from" data-course="' + e.c + '">' + (TL_C[e.c] || e.c) + '</button>' +
-      '</article></div></li>';
+    out += '<div class="tl-dot" style="--ih:' + ih + ';grid-row:' + r + ';grid-column:2" aria-hidden="true">' +
+      '<svg viewBox="0 0 48 48"><use href="#' + e.i + '"/></svg></div>' +
+      '<button class="tl-ev" data-course="' + e.c + '" style="--ih:' + ih + ';grid-row:' + r + ';grid-column:' + (ps ? 1 : 3) +
+      ';--al:' + (ps ? 'end' : 'start') + ';--ai:' + (ps ? 'flex-end' : 'flex-start') + '">' +
+      '<span class="y"><bdi dir="auto">' + e.lab + '</bdi></span><h3>' + e.t + '</h3><p>' + e.d + '</p>' +
+      '<span class="who">' + (TL_C[e.c] || '') + '</span></button>';
+    r++;
   });
-  out += '<li class="end"><span class="tl-y"></span><div class="tl-stem">' +
-    '<span class="ar" aria-hidden="true">\u25bc</span><span class="g">כאן נגמר החומר שסוכם עד כה. הציר ימשיך להתארך עם הקורסים.</span></div></li>';
+  out = '<i class="tl-rail" aria-hidden="true" style="grid-row:1/' + r + ';grid-column:2"></i>' + out +
+    '<div class="tl-fin" aria-hidden="true" style="grid-row:' + r + ';grid-column:2"><span class="ar">\u25bc</span></div>';
   $('tl-body').innerHTML = out;
-  $('tl-foot').innerHTML = 'הציר מסדר רק את מה שנלמד עד כה, ורק את האירועים הבולטים — לא כל מה שמופיע בסיכומים. ' +
-    'חלק מהשנים לא הופיעו בסיכומי השיעור עצמם ונוספו כאן כדי לסדר את הציר. ' +
-    'הקורס על האימפריה העות’מנית עדיין במבוא התיאורטי, ולכן אין ממנו אירועים בציר. ' +
-    'לחיצה על שם הקורס פותחת אותו.';
 }
-function setTl(sc) {
-  state.tl = sc; state.home = false; hidePop();
-  try { history.replaceState(null, '', '#timeline-' + sc); } catch (e) {}
+function setTl() {
+  state.tl = 1; state.home = false; hidePop();
+  try { history.replaceState(null, '', '#timeline'); } catch (e) {}
   renderAll(); window.scrollTo(0, 0);
 }
 
@@ -4069,7 +4019,7 @@ document.addEventListener('click', function (e) {
   if (d.gloss) { var sameg = !$('pop').hidden && $('pop').dataset.for === 'g' + d.gloss; if (sameg) return hidePop(); showGloss(el, d.gloss); $('pop').dataset.for = 'g' + d.gloss; return; }
   hidePop();
   if (d.home) { state.home = true; state.tl = null; renderAll(); window.scrollTo(0, 0); return; }
-  if (d.tl) { return setTl(d.tl === 'track' ? course().track : d.tl); }
+  if (d.tl) { return setTl(); }
   if (d.track) { var f = COURSES.filter(function (c) { return c.track === d.track; })[0]; if (f) selectCourse(f.id); return; }
   if (d.course) return selectCourse(d.course);
   if (d.view) return setView(d.view);
@@ -4145,7 +4095,7 @@ window.addEventListener('scroll', hidePop, { passive: true });
 $('q').addEventListener('input', function (e) { state.q = e.target.value.trim().toLowerCase(); renderContent(); });
 window.addEventListener('hashchange', function () {
   var h = location.hash.replace('#', '');
-  if (h.indexOf('timeline-') === 0 && TL_HUE[h.slice(9)]) { if (state.tl !== h.slice(9)) setTl(h.slice(9)); return; }
+  if (h === 'timeline') { if (!state.tl) setTl(); return; }
   if (VIEWS.some(function (v) { return v[0] === h; }) && h !== state.view) {
     if (state.tl) { state.tl = null; state.home = false; renderAll(); }
     state.view = h; renderHead(); renderContent();
@@ -4153,7 +4103,7 @@ window.addEventListener('hashchange', function () {
 });
 
 var h0 = location.hash.replace('#', '');
-if (h0.indexOf('timeline-') === 0 && TL_HUE[h0.slice(9)]) { state.tl = h0.slice(9); state.home = false; }
+if (h0 === 'timeline') { state.tl = 1; state.home = false; }
 else if (VIEWS.some(function (v) { return v[0] === h0; })) { state.view = h0; state.home = false; }
 loadCourse(state.course);
 renderAll();
