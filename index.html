@@ -670,6 +670,39 @@ a.pill, a.course { text-decoration: none; }
   .door-art .bob { animation: bob 4.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 }
 
+
+/* ---------- יחידה אחת לכל הרצאה או מאמר ---------- */
+.unit-h { align-items: flex-start; }
+.unit-h h3 { font-size: clamp(19px, 3vw, 23.5px); line-height: 1.35; }
+.unit-n { flex: none; font-size: 13px; font-weight: 700; color: var(--muted); background: var(--tint);
+  border: 1px solid var(--outline); border-radius: 999px; padding: 1px 10px; white-space: nowrap; }
+.unit-body > .src { margin: 0 0 14px; }
+.sub-toc { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 18px; padding: 0 0 16px;
+  border-bottom: 2px dashed var(--line); }
+.sub-toc button { display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14.5px; font-weight: 600;
+  background: var(--tint); border: 2px solid var(--outline); border-radius: 999px; padding: 3px 13px; color: var(--ink); cursor: pointer; }
+.sub-toc button:hover { border-color: var(--accent); color: var(--accent); }
+.sub-toc b { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%;
+  background: hsl(var(--h) var(--pill-s) var(--pill-l)); font-size: 12px; color: var(--ink); }
+.sub { padding-top: 22px; margin-top: 22px; border-top: 2px solid var(--line); }
+.sub:first-of-type { padding-top: 0; margin-top: 0; border-top: 0; }
+.sub > h4 { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px;
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(19px, 2.9vw, 23px); line-height: 1.3; color: var(--ink); }
+.sub-n { flex: none; display: inline-grid; place-items: center; min-width: 25px; height: 25px; padding: 0 6px;
+  border-radius: 999px; background: hsl(var(--h) var(--pill-s) var(--pill-l)); border: 2px solid var(--outline);
+  font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--ink); }
+.unit-body .row { margin-top: 10px; background: var(--tint); box-shadow: none; border-radius: 12px;
+  border-inline-start-width: 4px; padding: 11px 15px; }
+.unit-body .row[open] { padding-block: 13px; }
+.unit-body .row .topic-h { gap: 10px; }
+.unit-body .row .opener { font-size: 13.5px; }
+.unit-body .row h4 { margin: 0; flex: 1 1 auto; font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(16px, 2.4vw, 18.5px); line-height: 1.35; color: var(--ink); }
+@media print {
+  .unit-h .opener, .sub-toc { display: none !important; }
+  .sub { break-inside: avoid; }
+}
+
 /* ---------- מפת המזרח התיכון ---------- */
 .mappage { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 .map-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding: 10px 14px; }
@@ -4488,6 +4521,7 @@ var GLOSS = {
 };
 var MARK = /\{\{([^|}]+)\|([^}]+)\}\}/g;
 var QUOTES = /[“”"]/g;
+function enc(s) { return String(s).replace(/[^\w\u0590-\u05FF]+/g, '-'); }
 var PARENS = /\s*\(.*$/;
 var GMARK = /\[\[([^|\]]+)\|([^\]]+)\]\]/g;
 function strip(s) { return s.replace(MARK, '$2').replace(GMARK, '$2'); }
@@ -4575,29 +4609,37 @@ function topicHead(t) {
   return '<summary class="topic-h"><span class="wk">' + t.wk + '</span><h3>' + t.title + '</h3>' +
     tagHtml(t) + '<span class="opener" aria-hidden="true"></span></summary>';
 }
-function listTools(n, extra) {
+function listTools(nu, nt, extra) {
   var sc = srcChips();
   return '<div class="tools">' + sc + (sc ? '<span class="sep">|</span>' : '') +
     '<button class="chip" data-expand="1">' + (openAll() ? 'סגור הכול' : 'פתח הכול') + '</button>' +
-    (extra || '') + '<span class="count">' + n + ' נושאים</span></div>';
+    (extra || '') + '<span class="count">' + nu + (nu === 1 ? ' יחידה' : ' יחידות') +
+    ' · ' + nt + ' נושאים</span></div>';
 }
+function unitCount(us) { var n = 0; us.forEach(function (u) { n += u.items.length; }); return n; }
 
 function viewReview() {
-  var list = orderedTopics();
-  var tools = listTools(list.length, '<button class="chip" data-quiz="1" aria-pressed="' + state.quiz + '">בדוק את עצמי</button>');
-  if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
+  var units = visibleUnits();
+  var tools = listTools(units.length, unitCount(units),
+    '<button class="chip" data-quiz="1" aria-pressed="' + state.quiz + '">בדוק את עצמי</button>');
+  if (!units.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
   var op = openAll() ? ' open' : '';
-  var rows = list.map(function (t) {
-    var chips = termsOf(t).map(function (id) { return '<li><button data-term="' + id + '">' + TERMS[id].t.replace(/ \(.*\)/, '') + '</button></li>'; }).join('');
-    return '<details class="topic row"' + op + ' data-row="' + t.id + '" id="row-' + t.id + '">' +
-      topicHead(t) +
-      '<div class="topic-body">' +
-      '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="tldr" title="לחיצה חושפת">' + rich(t.tldr) + '</p></div>' +
-      '<div class="sec"><span class="sec-l">מושגים בנושא</span><ul class="chips">' + chips + '</ul></div>' +
-      '<details class="sec"><summary>נקודות עיקריות</summary><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></details>' +
-      '</div></details>';
+  var boxes = units.map(function (u) {
+    var rows = u.items.map(function (t, i) {
+      var chips = termsOf(t).map(function (id) { return '<li><button data-term="' + id + '">' + TERMS[id].t.replace(/ \(.*\)/, '') + '</button></li>'; }).join('');
+      return '<details class="topic row"' + op + ' data-row="' + t.id + '" id="row-' + t.id + '">' +
+        '<summary class="topic-h"><span class="sub-n">' + (i + 1) + '</span><h4>' + t.title + '</h4>' +
+        '<span class="opener" aria-hidden="true"></span></summary>' +
+        '<div class="topic-body">' +
+        '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="tldr" title="לחיצה חושפת">' + rich(t.tldr) + '</p></div>' +
+        '<div class="sec"><span class="sec-l">מושגים בנושא</span><ul class="chips">' + chips + '</ul></div>' +
+        '<details class="sec"><summary>נקודות עיקריות</summary><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></details>' +
+        '</div></details>';
+    }).join('');
+    return '<details class="topic unit"' + op + ' id="unit-' + enc(u.g.key) + '">' + unitHead(u) +
+      '<div class="topic-body unit-body">' + unitSrc(u) + rows + '</div></details>';
   }).join('');
-  return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + rows + '</div>';
+  return tools + '<div class="rows' + (state.quiz ? ' quiz' : '') + '" id="rows">' + boxes + '</div>';
 }
 /* ---------- diagrams (drawn from the summaries themselves) and photo slots ---------- */
 var HUES = { soc: 226, isr: 226, gov: 226, rm: 226, thought: 226, mehist: 176, islam: 176, ott: 176, orient: 176, arabic: 150, memap: 176,
@@ -4686,20 +4728,25 @@ function photosHtml(cid, tid) {
   }).join('') + '</div>';
 }
 function viewSummaries() {
-  var list = orderedTopics();
-  var tools = listTools(list.length);
-  if (!list.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
+  var units = visibleUnits();
+  var tools = listTools(units.length, unitCount(units));
+  if (!units.length) return tools + empty('לא נמצא כלום', 'נסה מילת חיפוש אחרת.');
   var op = openAll() ? ' open' : '';
-  return tools + '<div class="stack">' + list.map(function (t) {
-    return '<details class="topic card"' + op + ' id="topic-' + t.id + '">' +
-      topicHead(t) +
-      '<div class="topic-body">' +
-      '<p class="src">מקור: ' + t.srcLabel + '</p>' +
-      '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="lead">' + rich(t.tldr) + '</p></div>' +
-      photosHtml(state.course, t.id) + figHtml(state.course, t.id) +
-      '<div class="sec"><span class="sec-l">נקודות עיקריות</span><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="sec q-box"><span class="sec-l">שאלות לבדיקה עצמית</span><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' +
-      '</div></details>';
+  return tools + '<div class="stack">' + units.map(function (u) {
+    var inner = u.items.map(function (t, i) {
+      return '<article class="sub" id="topic-' + t.id + '">' +
+        '<h4><span class="sub-n">' + (i + 1) + '</span>' + t.title + '</h4>' +
+        '<div class="sec lead-box"><span class="sec-l">בקצרה</span><p class="lead">' + rich(t.tldr) + '</p></div>' +
+        photosHtml(state.course, t.id) + figHtml(state.course, t.id) +
+        '<div class="sec"><span class="sec-l">נקודות עיקריות</span><ul>' + t.pts.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' +
+        '<div class="sec q-box"><span class="sec-l">שאלות לבדיקה עצמית</span><ol>' + t.qs.map(function (q) { return '<li>' + q + '</li>'; }).join('') + '</ol></div>' +
+        '</article>';
+    }).join('');
+    return '<details class="topic card unit"' + op + ' id="unit-' + enc(u.g.key) + '">' + unitHead(u) +
+      '<div class="topic-body unit-body">' + unitSrc(u) +
+      '<nav class="sub-toc">' + u.items.map(function (t, i) {
+        return '<button data-sub="' + t.id + '"><b>' + (i + 1) + '</b>' + t.title + '</button>';
+      }).join('') + '</nav>' + inner + '</div></details>';
   }).join('') + '</div>';
 }
 function viewDictionary() {
@@ -4711,7 +4758,8 @@ function viewDictionary() {
   }).join('') + '</div>';
 }
 function unitKeyOf(t) {
-  return t.src === 'read' ? 'r:' + t.srcLabel : 'w:' + String(t.wk).split(',')[0].trim();
+  /* a reading or a course handout is its own unit; a lecture is one unit per week */
+  return (t.src === 'read' || t.src === 'course') ? 's:' + t.srcLabel : 'w:' + String(t.wk).split(',')[0].trim();
 }
 function examGroups() {
   /* lectures group by week, readings by their own source, so one lecture is one unit */
@@ -4724,16 +4772,60 @@ function examGroups() {
   });
   return order;
 }
+/* units, newest first, filtered by the search box and by the source chips */
+function visibleUnits() {
+  var out = [];
+  examGroups().forEach(function (g) {
+    var items = g.items.filter(topicVisible);
+    if (!items.length) {
+      if (!state.q) return;
+      var hay = (unitTitle(g) + ' ' + g.items[0].srcLabel).toLowerCase();
+      if (hay.indexOf(state.q) < 0) return;
+      items = g.items.filter(function (t) { return state.src === 'all' || t.src === state.src; });
+      if (!items.length) return;
+    }
+    out.push({ g: g, items: items, hidden: g.items.length - items.length });
+  });
+  return out.reverse();
+}
+/* the source line, unless it only repeats the unit's own title */
+function unitSrc(u) {
+  var ss = groupSources(u.g);
+  if (ss.length === 1 && ss[0] === unitTitle(u.g)) return '';
+  return '<p class="src">' + srcLine(ss) + '</p>';
+}
+function unitHead(u) {
+  var g = u.g, n = u.items.length;
+  return '<summary class="topic-h unit-h"><span class="wk">' + g.wk + '</span>' +
+    '<h3>' + unitTitle(g) + '</h3>' + (g.read ? '' : tagHtml(g.items[0])) +
+    '<span class="unit-n">' + n + (n === 1 ? ' נושא' : ' נושאים') +
+    (u.hidden ? ' מתוך ' + g.items.length : '') + '</span>' +
+    '<span class="opener" aria-hidden="true"></span></summary>';
+}
 function labelTitle(lab) {
   var ss = String(lab).split(' · ');
   var txt = (/^סיכום/.test(ss[0]) || ss[0] === 'חומרי הקורס') ? ss.slice(1).join(' · ') : ss[0];
   return txt.replace(QUOTES, '').replace(PARENS, '').trim();
 }
+/* the name of the thing itself: the full citation for a reading, the subject for a lecture */
+function unitTitle(g) {
+  var first = g.items[0], lab = first.srcLabel, t;
+  if (g.read) return lab;
+  if (first.src === 'course') {
+    var p = lab.split(' · ');
+    t = p.length > 1 ? p.slice(1).join(' · ') : lab;
+  } else if (UNITS[g.wk]) {
+    t = UNITS[g.wk];
+  } else {
+    t = labelTitle(lab);
+  }
+  t = String(t || '').replace(QUOTES, '').trim();
+  if (t.indexOf(g.wk) === 0) t = t.slice(g.wk.length).replace(/^[\s:·–-]+/, '');
+  return t || g.wk;
+}
 function groupTitle(g) {
-  var t = labelTitle(g.items[0].srcLabel);
-  if (g.read) return t || g.wk;
-  if (UNITS[g.wk]) return g.wk + ' · ' + UNITS[g.wk];
-  return (t && t.indexOf(g.wk) === 0 && t.indexOf(' · ') < 0) ? t : g.wk;
+  var t = unitTitle(g);
+  return g.read ? t : (t === g.wk ? t : g.wk + ' · ' + t);
 }
 function srcLine(ss) {
   return (ss.length > 1 ? 'מקורות: ' : 'מקור: ') + ss.join(' · ');
@@ -5401,8 +5493,13 @@ function goTerm(id) {
 function goTopic(id) {
   hidePop(); state.q = ''; $('q').value = ''; state.src = 'all';
   setView('summaries');
+  openSub(id);
+}
+function openSub(id) {
   var box = $('topic-' + id);
-  if (box) box.open = true;
+  if (!box) return;
+  var d = box.closest('details');
+  while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); }
   flashEl(box);
 }
 
@@ -5488,6 +5585,7 @@ document.addEventListener('click', function (e) {
   }
   if (d.quiz) { state.quiz = !state.quiz; return renderContent(); }
   if (d.topic) return goTopic(d.topic);
+  if (d.sub) return openSub(d.sub);
   if (d.flip) { state.flipped = !state.flipped; return renderContent(); }
   if (d.step) { var n = deckIds().length; state.idx = (state.idx + Number(d.step) + n) % n; state.flipped = false; return renderContent(); }
   if (d.know) { state.known[kk(d.know)] = 1; saveKnown(); state.flipped = false; if (state.onlyNew) { var m = deckIds().length; if (state.idx >= m) state.idx = 0; } else { state.idx = (state.idx + 1) % deckIds().length; } return renderContent(); }
